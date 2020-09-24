@@ -16,8 +16,9 @@ class Product extends Model
     // Timestamps
     public $timestamps = true;
 
-    public function files()
+    public function images()
     {
-        return $this->hasManyThrough('App\MediaFile', 'App\MediaFileUsage', 'usage_id', 'id', 'id', 'media_file_id');
+        return $this->hasManyThrough('App\MediaFile', 'App\MediaFileUsage', 'usage_id', 'id', 'id', 'media_file_id')
+            ->where('usage_table', $this->table);
     }
 }

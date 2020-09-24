@@ -124,7 +124,7 @@
             <!-- Block2 -->
             <div class="block2">
               <div class="block2-img wrap-pic-w of-hidden pos-relative block2-label">
-                <img src="{{ asset($product->files[0]->location)}}" alt="IMG-PRODUCT">
+                <img src="{{ asset($product->images[0]->path ?? '') }}" alt="{{ $product->sku }}">
 
                 <div class="block2-overlay trans-0-4">
                   <span class="block2-btn-addwishlist hov-pointer trans-0-4">
@@ -157,6 +157,7 @@
         </div>
 
         <!-- Pagination -->
+        {{ $products->links() }}
 
       </div>
     </div>

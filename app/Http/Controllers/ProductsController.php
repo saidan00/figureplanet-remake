@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\MediaFile;
+use App\MediaFileUsage;
 use App\Category;
+use GuzzleHttp\Handler\Proxy;
 
 class ProductsController extends Controller
 {
@@ -15,7 +18,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['files'])->get();
+        $products = Product::with(['images'])->paginate(9);
         $categories = Category::all();
 
         return view('products.index')->with(['products' => $products, 'categories' => $categories]);

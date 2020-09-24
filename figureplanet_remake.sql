@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2020 at 05:12 PM
+-- Generation Time: Sep 23, 2020 at 07:55 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.9
 
@@ -67,6 +67,34 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `media_files`
+--
+
+CREATE TABLE `media_files` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `media_file_usages`
+--
+
+CREATE TABLE `media_file_usages` (
+  `media_file_id` bigint(20) UNSIGNED NOT NULL,
+  `usage_table` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usage_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -75,23 +103,6 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `migrations`
---
-
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(1, '2014_10_12_000000_create_users_table', 1),
-(2, '2014_10_12_100000_create_password_resets_table', 1),
-(3, '2019_08_19_000000_create_failed_jobs_table', 1),
-(4, '2020_09_19_073950_create_permission_tables', 1),
-(7, '2020_09_22_132455_create_categories_table', 2),
-(8, '2020_09_22_132504_create_products_table', 2),
-(9, '2020_09_22_145028_create_order_statuses_table', 3),
-(11, '2020_09_22_145012_create_payment_methods_table', 4),
-(12, '2020_09_22_142929_create_orders_table', 5),
-(13, '2020_09_22_143003_create_order_details_table', 5),
-(14, '2020_09_22_150440_create_carts_table', 6);
 
 -- --------------------------------------------------------
 
@@ -296,6 +307,18 @@ ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `media_files`
+--
+ALTER TABLE `media_files`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `media_file_usages`
+--
+ALTER TABLE `media_file_usages`
+  ADD PRIMARY KEY (`media_file_id`,`usage_table`,`usage_id`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -400,10 +423,16 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `media_files`
+--
+ALTER TABLE `media_files`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `order_statuses`
@@ -451,6 +480,12 @@ ALTER TABLE `users`
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   ADD CONSTRAINT `carts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `media_file_usages`
+--
+ALTER TABLE `media_file_usages`
+  ADD CONSTRAINT `media_file_usages_media_file_id_foreign` FOREIGN KEY (`media_file_id`) REFERENCES `media_files` (`id`);
 
 --
 -- Constraints for table `model_has_permissions`
