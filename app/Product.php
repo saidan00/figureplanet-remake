@@ -16,6 +16,10 @@ class Product extends Model
     // Timestamps
     public $timestamps = true;
 
+    public function category() {
+        return $this->belongsTo('App\Category');
+    }
+
     public function images()
     {
         return $this->hasManyThrough('App\MediaFile', 'App\MediaFileUsage', 'usage_id', 'id', 'id', 'media_file_id')

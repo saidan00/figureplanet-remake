@@ -12,4 +12,8 @@ class Category extends Model
     public $primaryKey = 'id';
     // Timestamps
     public $timestamps = true;
+
+    public function products() {
+        return $this->hasMany('App\Product');
+    }
 }

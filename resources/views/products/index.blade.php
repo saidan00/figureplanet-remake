@@ -20,7 +20,7 @@
 
           <ul class="p-b-54">
             <li class="p-t-4">
-              <a data-categoryCode="all" href="/products/search/all" class="s-text13">
+              <a data-category="All" href="/products" class="s-text13 {{ !app('request')->input('category') || app('request')->input('category') == 'All' ? 'active1' : '' }}">
                 All
               </a>
             </li>
@@ -28,7 +28,7 @@
             @foreach($categories as $category)
             @if ($category->name != 'Others')
             <li class="p-t-4">
-              <a href="/products/search/" class="s-text13">
+            <a data-category="{{ $category->name }}" href="{{ '/products?category=' . $category->name }}" class="s-text13 {{ app('request')->input('category') == $category->name ? 'active1' : '' }}">
                 {{ $category->name }}
               </a>
             </li>
@@ -36,7 +36,7 @@
             @endforeach
 
             <li class="p-t-4">
-              <a data-categoryCode="others" href="/products/search/others" class="s-text13">
+              <a data-categoryCode="others" href="/products?category=Others" class="s-text13 {{ app('request')->input('category') == 'Others' ? 'active1' : '' }}">
                 Others
               </a>
             </li>
@@ -56,12 +56,12 @@
               <span class="s-text13">From:</span>
               <div class="bo4 of-hidden size15 m-b-20">
                 <input id="minPrice" class="sizefull s-text7 p-l-22 p-r-22" type="number" name="minPrice"
-                  placeholder="from" min="0" max="9999" value="">
+                  placeholder="from" min="0" max="999999999" value="{{ app('request')->input('from') ?? 0 }}">
               </div>
               <span class="s-text13">To:</span>
               <div class="bo4 of-hidden size15 m-b-20">
                 <input id="maxPrice" class="sizefull s-text7 p-l-22 p-r-22" type="number" name="maxPrice"
-                  placeholder="to" min="1" max="9999" value="">
+                  placeholder="to" min="1" max="999999999" value="{{ app('request')->input('to') ?? 999999999 }}">
               </div>
             </div>
 
@@ -84,7 +84,7 @@
             <!--  -->
             <div class="search-product bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10">
               <input id="search-product" class="s-text7 size15 p-l-23 p-r-50" type="text" name="search-product"
-                placeholder="Search Products..." value="">
+                placeholder="Search Products..." value="{{ app('request')->input('name') }}">
             </div>
 
             <!--  -->
@@ -93,14 +93,14 @@
                 <option value="default">Default
                   Sorting
                 </option>
-                <option value="a-to-z">Name: A-Z
+                <option value="a-to-z" {{ app('request')->input('sort') == 'a-to-z' ? 'selected' : '' }}>Name: A-Z
                 </option>
-                <option value="z-to-a">Name: Z-A
+                <option value="z-to-a" {{ app('request')->input('sort') == 'z-to-a' ? 'selected' : '' }}>Name: Z-A
                 </option>
-                <option value="low-to-high">
+                <option value="low-to-high" {{ app('request')->input('sort') == 'low-to-high' ? 'selected' : '' }}>
                   Price: low
                   to high</option>
-                <option value="high-to-low">
+                <option value="high-to-low" {{ app('request')->input('sort') == 'high-to-low' ? 'selected' : '' }}>
                   Price: high
                   to low</option>
               </select>
@@ -113,7 +113,7 @@
           </div>
 
           <span class="s-text8 p-t-5 p-b-5">
-            Showing 0–0 of 0 results
+          Showing {{ $products->firstItem() . '-' . $products->lastItem() }} of {{ $products->total() }} results
           </span>
         </div>
 
@@ -142,7 +142,7 @@
               </div>
 
               <div class="block2-txt p-t-20">
-                <a href="" class="block2-name dis-block s-text3 p-b-5">
+                <a href="/products/{{ $product->sku }}" class="block2-name dis-block s-text3 p-b-5">
                   {{ $product->name }}
                 </a>
 
@@ -157,12 +157,12 @@
         </div>
 
         <!-- Pagination -->
-        {{ $products->links() }}
+        {{ $products->appends(request()->query())->links() }}
 
       </div>
     </div>
   </div>
 </section>
 
-{{-- <script src="/js/filter-handler.js"></script>     --}}
+<script src="/js/filter-handler.js"></script>
 @endsection

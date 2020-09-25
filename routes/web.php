@@ -14,4 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'PagesController@index');
-Route::resource('products', 'ProductsController');
+Route::get('/products', 'ProductsController@index');
+Route::get('/products/{sku}', 'ProductsController@show');
+// Route::get('/products', 'ProductsController@index');
+// Route::get('/products', 'ProductsController@index');
