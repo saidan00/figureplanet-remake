@@ -35,7 +35,7 @@
       <!-- Header Icon -->
       <div class="header-icons">
         @auth
-        <a href="/users" class="header-wrapicon1 dis-block">Welcome JaySGH</a>
+        <a href="/user/profile" class="header-wrapicon1 dis-block">Welcome JaySGH</a>
         <span class="linedivide1"></span>
         <form action="{{ route('logout') }}" method="POST">
           @csrf
@@ -43,7 +43,7 @@
         </form>
         @endauth
         @guest
-        <a href="/users" class="header-wrapicon1 dis-block">
+        <a href="/login" class="header-wrapicon1 dis-block">
           <img src="{{ asset('/storage/media/icon-header-01.png') }}" class="header-icon1" alt="ICON">
         </a>
         @endguest
