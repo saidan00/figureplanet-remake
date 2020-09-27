@@ -8,7 +8,7 @@
       <i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
     </a>
 
-    <a href="" class="s-text16">
+  <a href="/products?category={{ $product->category->name }}" class="s-text16">
       {{ $product->category->name }}
       <i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
     </a>
@@ -30,7 +30,7 @@
             <!-- display thumbnail -->
               <div class="item-slick3" data-thumb="{{asset($product->images[0]->path)}}">
                 <div class="wrap-pic-w">
-                  <img src="{{asset($product->images[0]->path)}}" alt="IMG-PRODUCT">
+                  <img src="{{ asset($product->images[0]->path )}}" alt="IMG-PRODUCT">
                 </div>
               </div>
 

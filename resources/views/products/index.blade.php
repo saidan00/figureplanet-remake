@@ -2,9 +2,9 @@
 
 @section('content')
 <!-- Title Page -->
-<section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url(/images/master-slide1.png);">
-  <h2 class="l-text2 t-center">Figure Planet</h2>
-  <p class="m-text13 t-center">New Arrivals Figure 2019</p>
+<section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url({{ asset('/storage/media/heading-pages-02.jpg') }});">
+  <h2 class="l-text2 t-center">{{ config('app.name', 'Laravel') }}</h2>
+  <p class="m-text13 t-center">New Arrivals Figure {{ date("Y") }}</p>
 </section>
 
 <!-- Content page -->
@@ -113,7 +113,7 @@
           </div>
 
           <span class="s-text8 p-t-5 p-b-5">
-          Showing {{ $products->firstItem() . '-' . $products->lastItem() }} of {{ $products->total() }} results
+          Showing {{ $products->firstItem() ? $products->firstItem() . '-' . $products->lastItem() . ' of' : '' }} {{ $products->total() }} result(s)
           </span>
         </div>
 

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,9 @@ Route::get('/products', 'ProductsController@index');
 Route::get('/products/{sku}', 'ProductsController@show');
 // Route::get('/products', 'ProductsController@index');
 // Route::get('/products', 'ProductsController@index');
+
+// Route::get('users', 'UsersController@index')->middleware('auth');
+
+Auth::routes();
+
+// Route::get('/home', 'HomeController@index')->name('home');

@@ -20,17 +20,20 @@ class ProductsController extends Controller
 
         // filter by category
         if ($request->has('category')) {
-            echo $request->input('category');
             if ($request->input('category') != 'All') {
                 $category = $categories->where('name', '=', $request->input('category'))->first();
-                $products = $products->where('category_id', $category->id);
+                if ($category) {
+                    $products = $products->where('category_id', $category->id);
+                }
             }
         }
 
         // filter by name
         if ($request->has('name')) {
             if ($request->input('name') != 'none') {
-                $products = $products->where('name', 'LIKE', '%' . $request->input('name') . '%');
+                $products = $products
+                    ->where('name', 'LIKE', '%' . $request->input('name') . '%')
+                    ->orWhere('sku', $request->input('name'));
             }
         }
 

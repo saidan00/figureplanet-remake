@@ -11,7 +11,7 @@ $(document).ready(function() {
     let filter_name = $("#search-product").val();
     filter_name = filter_name.toLowerCase();
     filter_name = filter_name.trim();
-    filter_name = filter_name.replace(/[^a-z0-9 ]/gi, "");
+    // filter_name = filter_name.replace(/[^a-z0-9 ]/gi, "");
     filter_name = filter_name.replace(/  +/g, " ");
     filter_name = filter_name.replace(/ /gi, "_");
     if (filter_name == "") {
