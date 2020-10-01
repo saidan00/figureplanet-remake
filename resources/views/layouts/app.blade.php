@@ -90,25 +90,25 @@
 
         <ul>
           <li class="p-b-9">
-            <a href="#" class="s-text7">
+            <a href="/products?category=Scale Figure" class="s-text7">
               Scale Figure
             </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7">
+            <a href="/products?category=Nendoroid" class="s-text7">
               Nendoroid
             </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7">
+            <a href="/products?category=Figma" class="s-text7">
               Figma
             </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7">
+            <a href="/products?category=Others" class="s-text7">
               Others
             </a>
           </li>

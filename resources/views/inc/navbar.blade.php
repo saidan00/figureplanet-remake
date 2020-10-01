@@ -51,7 +51,7 @@
         <span class="linedivide1"></span>
 
         <div class="header-wrapicon2">
-          <a href="/carts">
+          <a href="/cart">
             <img src="{{ asset('/storage/media/icon-header-02.png') }}" class="header-icon1 js-show-header-dropdown"
               alt="ICON">
           </a>
