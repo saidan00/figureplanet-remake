@@ -19,7 +19,8 @@ class CartItem extends Model
         return $this->hasOne('App\Product', 'id', 'product_id');
     }
 
-    public function getTotalAttribute() {
+    public function getTotalAttribute()
+    {
         return $this->product->price * $this->quantity;
     }
 }

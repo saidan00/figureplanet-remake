@@ -30,12 +30,18 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::get('/user/profile', 'UsersController@index')->name('user.profile');
     Route::get('/user/changepassword', 'UsersController@changePassword')->name('user.changepassword');
-    Route::get('/user/orders', 'UsersController@index')->name('user.orders');
+    Route::get('/user/orders', 'OrdersController@index')->name('user.orders');
     Route::post('/user/updatepassword', 'UsersController@updatePassword')->name('user.updatepassword');
     Route::post('/user/update', 'UsersController@update');
 });
 
 // Cart route
 Route::get('/cart', 'CartsController@index');
+Route::get('/cart/processcheckout', 'CartsController@processCheckout')->middleware('auth');
+
+// Cart AJAX
+Route::get('/cart/totalcart', 'CartsController@getTotalCart')->middleware('auth');
+
+Route::post('orders/create', 'OrdersController@create')->middleware('auth');
 
 Auth::routes();

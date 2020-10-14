@@ -18,7 +18,7 @@ class Cart extends Model
 
     public function user()
     {
-        return $this->hasOne('App\User', 'id', 'user_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
     public function cart_items()
@@ -29,9 +29,11 @@ class Cart extends Model
     public function getSubtotalAttribute()
     {
         $subtotal = 0;
+
         foreach ($this->cart_items as $item) {
             $subtotal += $item->total;
         }
+
         return $subtotal;
     }
 
@@ -43,5 +45,21 @@ class Cart extends Model
     public function getTotalAttribute()
     {
         return $this->subtotal + $this->shipping_fee;
+    }
+
+    public function getTotalItemAttribute()
+    {
+        return count($this->cart_items);
+    }
+
+    // a recommended way to declare event handlers
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($cart) { // before delete() method call this
+            $cart->cart_items()->delete();
+            // do the rest of the cleanup...
+        });
     }
 }

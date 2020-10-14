@@ -10,7 +10,7 @@
 </section>
 
 <!-- Cart -->
-@if (count($carts->cart_items) == 0 || $carts == null)
+@if (!isset($cart->cart_items) || count($cart->cart_items) == 0)
 <section id="cart-logged-in" class="bg-title-page p-t-50 p-b-40 flex-col-c-m">
   <h2>Nothing to show</h2>
   <p>
@@ -33,7 +33,7 @@
               <th class="column-5">Total</th>
             </tr>
 
-            @foreach ($carts->cart_items as $item)
+            @foreach ($cart->cart_items as $item)
             <!-- load cart -->
             <tr id="{{ $item->product->id }}" class="table-row" data-sku="" data-name="cart">
               <td class="column-1">
@@ -79,7 +79,7 @@
         </span>
 
         <span class="m-text21 w-size20 w-full-sm" data-name="sub-total">
-          {{ number_format($carts->subtotal, 0) }}
+          {{ number_format($cart->subtotal, 0) }}
         </span>
       </div>
 
@@ -90,7 +90,7 @@
         </span>
 
         <span class="m-text21 w-size20 w-full-sm" data-name="shipping">
-          {{ number_format($carts->shipping_fee, 0) }}
+          {{ number_format($cart->shipping_fee, 0) }}
         </span>
       </div>
 
@@ -102,7 +102,7 @@
 
         <span class="m-text21 w-size20 w-full-sm">
           <span class="m-text21 w-size20 w-full-sm" data-name="total">
-            {{ number_format($carts->total, 0) }}
+            {{ number_format($cart->total, 0) }}
           </span>
         </span>
       </div>

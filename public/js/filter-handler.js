@@ -15,7 +15,7 @@ $(document).ready(function() {
     filter_name = filter_name.replace(/  +/g, " ");
     filter_name = filter_name.replace(/ /gi, "_");
     if (filter_name == "") {
-      filter_name = "none";
+      // filter_name = "none";
     }
     return filter_name;
   }

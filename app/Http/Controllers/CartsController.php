@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cart;
-use App\User;
+use App\Order;
+use App\OrderDetail;
 use stdClass;
 
 class CartsController extends Controller
@@ -18,32 +19,40 @@ class CartsController extends Controller
      */
     public function index()
     {
-        $carts = $this->getCart();
+        $cart = $this->getCart();
 
-        return view('carts.index')->with(['carts' => $carts]);
-        // echo json_encode($carts);
+        return view('carts.index')->with(['cart' => $cart]);
+        // echo json_encode($cart);
     }
 
-    public function processCheckout() {
-        $carts = $this->getCart();
+    public function processCheckout()
+    {
+        $cart = $this->getCart();
 
-        if (auth()->check()) {
-            $user = User::find(auth()->user()->id);
-        }
-
+        return view('carts.checkout')->with(['cart' => $cart]);
+        // echo json_encode($cart);
     }
 
-    private function getCart() {
-        $carts = null;
+    private function getCart()
+    {
+        $cart = new stdClass;
 
         // get cart of logged in user
         if (auth()->check()) {
-            $carts = Cart::with('cart_items.product.images')
+            $cart = Cart::with(['cart_items.product.images', 'user'])
                 ->where('user_id', auth()->user()->id)
                 ->first();
         }
 
-        return $carts;
+        return $cart;
+    }
+
+    /**
+     * Return number of item(s) in cart
+     */
+    public function getTotalCart() {
+        $cart = $this->getCart();
+        echo $cart->total_item ?? 0;
     }
 
     /**

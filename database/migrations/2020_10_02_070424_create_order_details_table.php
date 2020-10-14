@@ -23,6 +23,7 @@ class CreateOrderDetailsTable extends Migration
             // properties
             $table->double('price');
             $table->integer('quantity');
+            $table->double('total');
 
             // primary key
             $table->primary(['order_id', 'product_id']);

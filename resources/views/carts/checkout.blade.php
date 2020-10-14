@@ -2,7 +2,7 @@
 
 @section('content')
 
-@if (count($carts) == 0)
+@if (!isset($cart->cart_items) || count($cart->cart_items) == 0)
 <section id="cart-logged-in" class="bg-title-page p-t-50 p-b-40 flex-col-c-m">
   <h2>Nothing to show</h2>
   <p>
@@ -16,7 +16,7 @@
       <div class="card card-body mt-5 mb-5">
         <h2>Order Details</h2>
         <hr>
-        <form name="checkout-form" action="/carts/checkout" method="POST">
+        <form name="checkout-form" action="/orders/create" method="POST">
           @csrf
 
           <div class="row">
@@ -25,7 +25,7 @@
               <div class="bo4">
                 <input type="text" name="first_name"
                   class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('first_name') is-invalid @enderror"
-                  value="{{ $user->first_name }}" placeholder="First name">
+                  value="{{ $cart->user->first_name }}" placeholder="First name">
               </div>
               @error('first_name')
               <span class="text-danger small">{{ $message }}</span>
@@ -37,7 +37,7 @@
               <div class="bo4">
                 <input type="text" name="last_name"
                   class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('last_name') is-invalid @enderror"
-                  value="{{ $user->last_name }}" placeholder="Last name">
+                  value="{{ $cart->user->last_name }}" placeholder="Last name">
               </div>
               @error('last_name')
               <span class="text-danger small">{{ $message }}</span>
@@ -50,7 +50,7 @@
             <div class="bo4">
               <input type="text" name="phone"
                 class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('phone') is-invalid @enderror"
-                value="{{ $user->phone }}" placeholder="Phone">
+                value="{{ $cart->user->phone }}" placeholder="Phone">
             </div>
             @error('phone')
             <span class="text-danger small">{{ $message }}</span>
@@ -62,7 +62,7 @@
             <div class="bo4">
               <input type="text" name="address"
                 class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('address') is-invalid @enderror"
-                value="{{ $user->address }}" placeholder="Address">
+                value="{{ $cart->user->address }}" placeholder="Address">
             </div>
             @error('address')
             <span class="text-danger small">{{ $message }}</span>
@@ -70,15 +70,15 @@
           </div>
 
           <div class="form-group">
-            <label for="payment">Payment <span class="text-danger small font-weight-bold">*</span></label>
+            <label for="payment_method">Payment <span class="text-danger small font-weight-bold">*</span></label>
             <div>
-              <input type="radio" name="payment" value="cod" checked> <span class="small text-secondary">COD</span><br>
-              <input type="radio" name="payment" value="bank-transfer" disabled> <span class="small text-secondary">Bank
+              <input type="radio" name="payment_method" value="cod" checked> <span class="small text-secondary">COD</span><br>
+              <input type="radio" name="payment_method" value="bank-transfer" disabled> <span class="small text-secondary">Bank
                 Transfer (developing)</span><br>
-              <input type="radio" name="payment" value="credit-card" disabled> <span class="small text-secondary">Credit
+              <input type="radio" name="payment_method" value="credit-card" disabled> <span class="small text-secondary">Credit
                 Card (developing)</span>
             </div>
-            @error('payment')
+            @error('payment_method')
             <span class="text-danger small">{{ $message }}</span>
             @enderror
           </div>
@@ -108,14 +108,16 @@
             <th>Product</th>
             <th class="quantity"> Quantity</th>
             <th>Price</th>
+            <th>Total</th>
           </tr>
-          <?php for ($i = 0; $i < $data["cart"]["totalCart"]; $i++) : ?>
+          @foreach ($cart->cart_items as $item)
           <tr>
-            <td><?php echo $data["cart"]["cart"][$i]->productName; ?></td>
-            <td class="quantity"><?php echo $data["cart"]["cart"][$i]->quantity; ?></td>
-            <td><?php echo "$" . $data["cart"]["cart"][$i]->price *  $data["cart"]["cart"][$i]->quantity; ?></td>
+            <td>{{ $item->product->name }}</td>
+            <td class="quantity">{{ $item->quantity }}</td>
+            <td>{{ number_format($item->product->price, 0) }}</td>
+            <td>{{ number_format($item->total, 0) }}</td>
           </tr>
-          <?php endfor; ?>
+          @endforeach
         </table>
 
         <hr>
@@ -131,7 +133,7 @@
           </span>
 
           <span class="m-text21 w-size20 w-full-sm" data-name="sub-total">
-            $<?php echo $data["cart"]["subTotal"]; ?>
+            {{ number_format($cart->subtotal, 0) }}
           </span>
         </div>
 
@@ -142,7 +144,7 @@
           </span>
 
           <span class="m-text21 w-size20 w-full-sm" data-name="shipping">
-            $<?php echo $data["cart"]["shipping"]; ?>
+            {{ number_format($cart->shipping_fee, 0) }}
           </span>
         </div>
 
@@ -154,7 +156,7 @@
 
           <span class="m-text21 w-size20 w-full-sm">
             <span class="m-text21 w-size20 w-full-sm" data-name="total">
-              $<?php echo $data["cart"]["total"]; ?>
+              {{ number_format($cart->total, 0) }}
             </span>
           </span>
         </div>
