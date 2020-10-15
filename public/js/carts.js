@@ -1,78 +1,89 @@
-$(document).ready(function () {
+$(document).ready(function() {
   bindEvent();
 
   // button add to cart - index
-  $(".block2-btn-addcart").each(function () {
+  $(".block2-btn-addcart").each(function() {
     let productName = $(this).parent().parent().parent().find(".block2-name").html();
 
-    $(this).on("click", function () {
+    $(this).on("click", function() {
       let productSKU = $(this).attr("data-sku");
       addToCart(productSKU, productName);
     });
   });
 
   // button add to cart - product detail
-  $(".btn-addcart-product-detail").each(function () {
+  $(".btn-addcart-product-detail").each(function() {
     let productName = $(".product-detail-name").html();
 
-    $(this).on("click", function () {
+    $(this).on("click", function() {
       // get quantity and handle it with number handler (main.js)
       let quantity = $("#num-product").val();
       quantity = quantityHandler(quantity);
 
       // get product sku
-      let productSKU = $(this).attr("data-sku");
+      let productId = $(this).data('product-id');
 
-      addToCart(productSKU, productName, quantity);
+      addToCart(productId, productName, quantity);
     });
   });
 
   // button add to wishlist
-  $(".block2-btn-addwishlist").each(function () {
+  $(".block2-btn-addwishlist").each(function() {
     var nameProduct = $(this).parent().parent().parent().find(".block2-name").html();
-    $(this).on("click", function () {
+    $(this).on("click", function() {
       // Alert using sweetalert
       swal(nameProduct, "is added to wishlist !", "success");
     });
   });
 
   // button apply coupon
-  $("#btn-coupon").click(function () {
+  $("#btn-coupon").click(function() {
     swal("", "Invalid Code", "error");
   });
 
   // remove from cart
-  $(document).on("click", ".cart-img-product", function () {
+  $(document).on("click", ".cart-img-product", function() {
     let productSKU = $(this).attr("data-sku");
     jQuery.ajax({
       url: URLROOT + "/carts/removeFromCart/" + productSKU,
       type: "POST",
-      success: function (data) {
+      success: function(data) {
         loadCart();
       },
     });
   });
 
   // Add to cart (with AJAX)
-  function addToCart(productSKU, productName, quantity = 1) {
-    jQuery.ajax({
-      url: URLROOT + "/carts/addToCart/" + productSKU + "/" + quantity,
-      type: "POST",
-      success: function (data) {
-        data = JSON.parse(data);
-        if (data["status"] == true) {
-          // load total carts (main.js)
-          loadTotalCart();
+  function addToCart(productId, productName, quantity = 1) {
+    let data = {
+      product_id: productId,
+      quantity: quantity
+    };
 
-          // Alert using sweetalert
-          swal(productName, "is added to cart !", "success");
-        } else if (data["status"] == "out_of_stock") {
-          swal("Oops", "Product is out of stock", "error");
-        } else if (data["status"] == "less_than_required") {
-          swal("Oops", "Product is less than required", "error");
-        } else {
-          swal("Oops", "Something went wrong", "error");
-        }
+    let json = JSON.stringify(data);
+
+    jQuery.ajax({
+      type: "POST",
+      url: "/cart/addtocart/",
+      data: json,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(response) {
+        console.log(response);
+        // data = JSON.parse(data);
+        // if (data["status"] == true) {
+        // load total carts (main.js)
+        // loadTotalCart();
+
+        // Alert using sweetalert
+        //   swal(productName, "is added to cart !", "success");
+        // } else if (data["status"] == "out_of_stock") {
+        //   swal("Oops", "Product is out of stock", "error");
+        // } else if (data["status"] == "less_than_required") {
+        //   swal("Oops", "Product is less than required", "error");
+        // } else {
+        //   swal("Oops", "Something went wrong", "error");
+        // }
       },
     });
   }
@@ -82,7 +93,7 @@ $(document).ready(function () {
     jQuery.ajax({
       url: URLROOT + "/carts/updateCart/" + productSKU + "/" + quantity,
       type: "POST",
-      success: function (data) {
+      success: function(data) {
         data = JSON.parse(data);
         if (data["status"] == "less_than_required") {
           swal("Oops", "Product is less than required", "error");
@@ -96,7 +107,7 @@ $(document).ready(function () {
     jQuery.ajax({
       url: URLROOT + "/carts/getCartByCurrentUser",
       type: "POST",
-      success: function (data) {
+      success: function(data) {
         data = JSON.parse(data);
 
         if (data["totalCart"] == 0) {
@@ -156,16 +167,16 @@ $(document).ready(function () {
 
         $("#cart-table").html(
           "" +
-            '<table class="table-shopping-cart">' +
-            '<tr class="table-head">' +
-            '<th class="column-1"></th>' +
-            '<th class="column-2">Product</th>' +
-            '<th class="column-3">Price</th>' +
-            '<th class="column-4 p-l-70">Quantity</th>' +
-            '<th class="column-5">Total</th>' +
-            "</tr>" +
-            productsTable +
-            "</table>"
+          '<table class="table-shopping-cart">' +
+          '<tr class="table-head">' +
+          '<th class="column-1"></th>' +
+          '<th class="column-2">Product</th>' +
+          '<th class="column-3">Price</th>' +
+          '<th class="column-4 p-l-70">Quantity</th>' +
+          '<th class="column-5">Total</th>' +
+          "</tr>" +
+          productsTable +
+          "</table>"
         );
 
         $("[data-name='sub-total']").html("$" + myToFixed(data["subTotal"], 3));
@@ -182,11 +193,11 @@ $(document).ready(function () {
   // using to bind again event after ajax
   function bindEvent() {
     // update cart
-    $("[data-name='cart']").each(function () {
+    $("[data-name='cart']").each(function() {
       let productSKU = $(this).attr("data-sku"); // "this" here is ".table-row" element
       $(this)
         .find("input")
-        .change(function () {
+        .change(function() {
           let quantity = $(this).val(); // "this" here is input element
 
           updateCart(productSKU, quantity);

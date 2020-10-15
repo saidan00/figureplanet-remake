@@ -39,7 +39,7 @@
         <span class="linedivide1"></span>
         <form action="{{ route('logout') }}" method="POST">
           @csrf
-          <button type="submit" href="/logout" class="header-wrapicon1 dis-block">Logout</button>
+          <button id="btn-logout" type="submit" href="/logout" class="header-wrapicon1 dis-block">Logout</button>
         </form>
         @endauth
         @guest

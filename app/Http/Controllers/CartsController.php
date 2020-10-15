@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cart;
-use App\Order;
-use App\OrderDetail;
+use App\CartItem;
+use App\Product;
 use stdClass;
 
 class CartsController extends Controller
@@ -48,11 +48,39 @@ class CartsController extends Controller
     }
 
     /**
-     * Return number of item(s) in cart
+     * AJAX (GET): Return number of item(s) in cart
      */
     public function getTotalCart() {
         $cart = $this->getCart();
         echo $cart->total_item ?? 0;
+    }
+
+    /**
+     * AJAX (POST): Add item(s) to cart
+     */
+    public function addToCart(Request $request) {
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity') ?? 1;
+        $userId = auth()->user()->id;
+
+        $cart = Cart::where('user_id', $userId)->first();
+
+        // if there is no cart in db
+        if ($cart == null) {
+            $cart = new Cart;
+            $cart->user_id = $userId;
+            $cart->save();
+        }
+
+        $item = new CartItem;
+
+        $item->cart_id = $cart->id;
+        $item->product_id = $productId;
+        $item->quantity = $quantity;
+
+        $item->save();
+
+        return json_encode($cart);
     }
 
     /**

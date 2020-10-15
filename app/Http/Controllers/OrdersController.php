@@ -8,7 +8,7 @@ use App\OrderDetail;
 use App\Cart;
 use App\OrderStatus;
 use App\PaymentMethod;
-use Faker\Provider\ar_SA\Payment;
+use Illuminate\Support\Facades\Route;
 
 class OrdersController extends Controller
 {
@@ -24,9 +24,12 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = Order::where('user_id', auth()->user()->id)->get();
+        $orders = Order::with(['order_details', 'user', 'order_status'])
+            ->where('user_id', auth()->user()->id)->get();
+        $currentRoute = Route::currentRouteName();
 
-        return view('users.orders')->with(['orders' => $orders]);
+        return view('orders.index')->with(['orders' => $orders, 'currentRoute' => $currentRoute]);
+        // echo json_encode($orders);
     }
 
     /**
@@ -78,15 +81,17 @@ class OrdersController extends Controller
         // create order_details
         foreach ($cart->cart_items as $item) {
             $order_detail = new OrderDetail;
+
             $order_detail->order_id = $order_id;
             $order_detail->product_id = $item->product_id;
             $order_detail->price = $item->product->price;
             $order_detail->quantity = $item->quantity;
             $order_detail->total = $item->total;
-            $order_detail->save();
-        }
 
-        $cart->delete();
+            $order_detail->save();
+
+            $item->delete();
+        }
 
         return view('carts.index');
     }
@@ -110,7 +115,10 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = Order::with(['order_details.product.images'])->find($id);
+
+        return view('orders.show')->with(['order' => $order]);
+        // echo json_encode($order);
     }
 
     /**

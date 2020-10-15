@@ -15,32 +15,34 @@ use Illuminate\Support\Facades\Auth;
 */
 
 // Pages route
-Route::get('/', 'PagesController@index');
-Route::get('/about', 'PagesController@about');
-Route::get('/contact', 'PagesController@contact');
+Route::get('', 'PagesController@index');
+Route::get('about', 'PagesController@about');
+Route::get('contact', 'PagesController@contact');
 
 // Product route
-Route::get('/products', 'ProductsController@index');
-Route::get('/products/{sku}', 'ProductsController@show');
+Route::get('products', 'ProductsController@index');
+Route::get('products/{sku}', 'ProductsController@show');
 
 // User route
-Route::middleware(['auth'])->group(function () {
-    Route::get('/user', function () {
-        return redirect('/user/profile');
+Route::prefix('user')->middleware(['auth'])->group(function () {
+    Route::get('', function () {
+        return redirect()->route('user.profile');
     });
-    Route::get('/user/profile', 'UsersController@index')->name('user.profile');
-    Route::get('/user/changepassword', 'UsersController@changePassword')->name('user.changepassword');
-    Route::get('/user/orders', 'OrdersController@index')->name('user.orders');
-    Route::post('/user/updatepassword', 'UsersController@updatePassword')->name('user.updatepassword');
-    Route::post('/user/update', 'UsersController@update');
+    Route::get('profile', 'UsersController@index')->name('user.profile');
+    Route::get('changepassword', 'UsersController@changePassword')->name('user.changepassword');
+    Route::post('updatepassword', 'UsersController@updatePassword')->name('user.updatepassword');
+    Route::post('update', 'UsersController@update');
+    Route::get('orders', 'OrdersController@index')->name('user.orders');
+    Route::get('orders/{id}', 'OrdersController@show')->name('user.orders.show');
 });
 
 // Cart route
-Route::get('/cart', 'CartsController@index');
-Route::get('/cart/processcheckout', 'CartsController@processCheckout')->middleware('auth');
+Route::get('cart', 'CartsController@index');
+Route::get('cart/processcheckout', 'CartsController@processCheckout')->middleware('auth');
 
 // Cart AJAX
-Route::get('/cart/totalcart', 'CartsController@getTotalCart')->middleware('auth');
+Route::get('cart/totalcart', 'CartsController@getTotalCart')->middleware('auth');
+Route::post('cart/addtocart', 'CartsController@addToCart')->middleware('auth');
 
 Route::post('orders/create', 'OrdersController@create')->middleware('auth');
 
