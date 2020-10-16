@@ -35,7 +35,7 @@
       <!-- Header Icon -->
       <div class="header-icons">
         @auth
-        <a href="/user/profile" class="header-wrapicon1 dis-block">Welcome JaySGH</a>
+      <a href="/user/profile" class="header-wrapicon1 dis-block">Welcome {{ Auth::user()->first_name }}</a>
         <span class="linedivide1"></span>
         <form action="{{ route('logout') }}" method="POST">
           @csrf

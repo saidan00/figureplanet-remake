@@ -43,15 +43,47 @@ $(document).ready(function() {
 
   // remove from cart
   $(document).on("click", ".cart-img-product", function() {
-    let productSKU = $(this).attr("data-sku");
-    jQuery.ajax({
-      url: URLROOT + "/carts/removeFromCart/" + productSKU,
+    let productId = $(this).data('productId');
+
+    removeFromCart(productId);
+
+    // jQuery.ajax({
+    //   url: URLROOT + "/carts/removeFromCart/" + productSKU,
+    //   type: "POST",
+    //   success: function(data) {
+    //     loadCart();
+    //   },
+    // });
+  });
+
+  // Remove from cart (with AJAX)
+  function removeFromCart(productId) {
+    let _token = $('meta[name="csrf-token"]').attr('content');
+
+    let data = {
+      product_id: productId,
+      _token: _token
+    };
+
+    let json = JSON.stringify(data);
+
+    $.ajax({
+      // method: "POST",
+      url: "/cart/removefromcart",
       type: "POST",
-      success: function(data) {
-        loadCart();
+      data: json,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(response) {
+        console.log(response)
+          // load total carts (main.js)
+        loadTotalCart();
+
+        $('#product-' + productId).remove();
+        loadCart(response);
       },
     });
-  });
+  }
 
   // Add to cart (with AJAX)
   function addToCart(productId, productName, quantity = 1) {
@@ -64,12 +96,11 @@ $(document).ready(function() {
     };
 
     let json = JSON.stringify(data);
-    console.log(productId + "aaaaaaaaaaa");
 
-    jQuery.ajax({
+    $.ajax({
       // method: "POST",
+      url: "/cart/addtocart",
       type: "POST",
-      url: "/cart/addtocart/",
       data: json,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
@@ -98,91 +129,22 @@ $(document).ready(function() {
   }
 
   // reload cart
-  function loadCart() {
-    jQuery.ajax({
-      url: URLROOT + "/carts/getCartByCurrentUser",
-      type: "POST",
-      success: function(data) {
-        data = JSON.parse(data);
+  function loadCart(cart) {
+    if ($('#table-shopping-cart tr').length == 1) {
+      // $('#table-shopping-cart').remove();
+      // $('#cart-totals').remove();
+      // location.reload();
+      $("#cart-logged-in").attr("class", "bg-title-page p-t-50 p-b-40 flex-col-c-m");
+      $("#cart-logged-in").html(
+        "" + "<h2>Nothing to show</h2>" + "<p>" + "Your cart is empty. Please buy something." + "</p>"
+      );
+    } else {
+      $("[data-name='sub-total']").html(cart.subtotal);
+      $("[data-name='shipping']").html(cart.shipping_fee);
+      $("[data-name='total']").html(cart.total);
 
-        if (data["totalCart"] == 0) {
-          $("#cart-logged-in").attr("class", "bg-title-page p-t-50 p-b-40 flex-col-c-m");
-          $("#cart-logged-in").html(
-            "" + "<h2>Nothing to show</h2>" + "<p>" + "Your cart is empty. Please buy something." + "</p>"
-          );
-        }
-        let productsTable = "";
-        for (let i = 0; i < data["totalCart"]; i++) {
-          productsTable +=
-            "" +
-            '<tr id="' +
-            data["cart"][i].sku +
-            '" class="table-row" data-sku="' +
-            data["cart"][i].sku +
-            '" data-name="cart">' +
-            '<td class="column-1">' +
-            '<div class="cart-img-product b-rad-4 o-f-hidden" data-sku="' +
-            data["cart"][i].sku +
-            '">' +
-            '<img src="' +
-            URLROOT +
-            "/" +
-            data["cart"][i].imgPath +
-            '" alt="IMG-PRODUCT">' +
-            "</div>" +
-            "</td>" +
-            '<td class="column-2"><a href="' +
-            URLROOT +
-            "/products/product/" +
-            data["cart"][i].sku +
-            '">' +
-            data["cart"][i].productName +
-            "</a></td>" +
-            '<td class="column-3">$' +
-            data["cart"][i].price +
-            "</td>" +
-            '<td class="column-4">' +
-            '<div class="flex-w bo5 of-hidden w-size17">' +
-            '<button class="btn-num-product-down color1 flex-c-m size7 bg8 eff2">' +
-            '<i class="fs-12 fa fa-minus" aria-hidden="true"></i>' +
-            "</button>" +
-            '<input class="size8 m-text18 t-center num-product" type="number" name="num-product1" value="' +
-            data["cart"][i].quantity +
-            '">' +
-            '<button class="btn-num-product-up color1 flex-c-m size7 bg8 eff2">' +
-            '<i class="fs-12 fa fa-plus" aria-hidden="true"></i>' +
-            "</button>" +
-            "</div>" +
-            "</td>" +
-            '<td class="column-5">$' +
-            myToFixed(parseFloat(data["cart"][i].quantity) * parseFloat(data["cart"][i].price), 3) +
-            "</td>" +
-            "</tr>";
-        }
-
-        $("#cart-table").html(
-          "" +
-          '<table class="table-shopping-cart">' +
-          '<tr class="table-head">' +
-          '<th class="column-1"></th>' +
-          '<th class="column-2">Product</th>' +
-          '<th class="column-3">Price</th>' +
-          '<th class="column-4 p-l-70">Quantity</th>' +
-          '<th class="column-5">Total</th>' +
-          "</tr>" +
-          productsTable +
-          "</table>"
-        );
-
-        $("[data-name='sub-total']").html("$" + myToFixed(data["subTotal"], 3));
-        $("[data-name='shipping']").html("$" + myToFixed(data["shipping"], 3));
-        $("[data-name='total']").html("$" + myToFixed(data["total"], 3));
-
-        loadTotalCart();
-
-        bindEvent();
-      },
-    });
+      loadTotalCart();
+    }
   }
 
   // using to bind again event after ajax
@@ -197,7 +159,7 @@ $(document).ready(function() {
 
           updateCart(productSKU, quantity);
 
-          loadCart();
+          // loadCart();
         });
     });
   }

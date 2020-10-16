@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cart;
 use App\CartItem;
-use App\Product;
+use App\Http\Resources\Cart as CartResource;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -75,19 +75,15 @@ class CartsController extends Controller
             $cart->save();
         }
 
-        // $item = new CartItem;
-
-        // $item->cart_id = $cart->id;
-        // $item->product_id = $productId;
-        // $item->quantity = $quantity;
-
-        // $item->save();
-
+        // INSERT ON DUPLICATE KEY UPDATE
         DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity', [$cart->id, $productId, $quantity]);
 
         return json_encode($cart);
     }
 
+    /**
+     * AJAX (POST): Remove item from cart
+     */
     public function removeFromCart(Request $request)
     {
         $productId = $request->input('product_id');
@@ -95,11 +91,10 @@ class CartsController extends Controller
 
         $cart = Cart::where('user_id', $userId)->first();
 
-        $item = CartItem::where(['cart_id', '=', $cart->id], ['product_id', '=', $productId])->first();
+        CartItem::where(['cart_id' => $cart->id, 'product_id' => $productId])
+            ->delete();
 
-        $item->delete();
-
-        return json_encode($cart);
+        return new CartResource($cart);
     }
 
     /**

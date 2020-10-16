@@ -24,7 +24,7 @@
     <div class="container-table-cart pos-relative">
       <div class="wrap-table-shopping-cart bgwhite">
         <div id="cart-table">
-          <table class="table-shopping-cart">
+          <table class="table-shopping-cart" id="table-shopping-cart">
             <tr class="table-head">
               <th class="column-1"></th>
               <th class="column-2">Product</th>
@@ -35,9 +35,9 @@
 
             @foreach ($cart->cart_items as $item)
             <!-- load cart -->
-            <tr id="{{ $item->product->id }}" class="table-row" data-sku="" data-name="cart">
+            <tr id="product-{{ $item->product->id }}" class="table-row" data-sku="" data-name="cart">
               <td class="column-1">
-                <div class="cart-img-product b-rad-4 o-f-hidden" data-sku="{{ $item->product->sku }}">
+                <div class="cart-img-product b-rad-4 o-f-hidden" data-product-id="{{ $item->product->id }}">
                   <img src="{{ asset($item->product->images[0]->path) }}" alt="IMG-PRODUCT">
                 </div>
               </td>
@@ -67,7 +67,7 @@
     </div>
 
     <!-- Total -->
-    <div class="bo9 w-size18 p-l-40 p-r-40 p-t-30 p-b-38 m-t-30 m-r-0 m-l-auto p-lr-15-sm">
+    <div class="bo9 w-size18 p-l-40 p-r-40 p-t-30 p-b-38 m-t-30 m-r-0 m-l-auto p-lr-15-sm" id="cart-totals">
       <h5 class="m-text20 p-b-24">
         Cart Totals
       </h5>

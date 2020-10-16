@@ -43,6 +43,7 @@ Route::get('cart/processcheckout', 'CartsController@processCheckout')->middlewar
 // Cart AJAX
 Route::get('cart/totalcart', 'CartsController@getTotalCart')->middleware('auth');
 Route::post('cart/addtocart', 'CartsController@addToCart')->middleware('auth');
+Route::post('cart/removefromcart', 'CartsController@removeFromCart')->middleware('auth');
 
 Route::post('orders/create', 'OrdersController@create')->middleware('auth');
 
