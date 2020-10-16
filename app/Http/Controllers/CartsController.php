@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Cart;
 use App\CartItem;
 use App\Product;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class CartsController extends Controller
@@ -50,7 +51,8 @@ class CartsController extends Controller
     /**
      * AJAX (GET): Return number of item(s) in cart
      */
-    public function getTotalCart() {
+    public function getTotalCart()
+    {
         $cart = $this->getCart();
         echo $cart->total_item ?? 0;
     }
@@ -58,7 +60,8 @@ class CartsController extends Controller
     /**
      * AJAX (POST): Add item(s) to cart
      */
-    public function addToCart(Request $request) {
+    public function addToCart(Request $request)
+    {
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity') ?? 1;
         $userId = auth()->user()->id;
@@ -72,13 +75,29 @@ class CartsController extends Controller
             $cart->save();
         }
 
-        $item = new CartItem;
+        // $item = new CartItem;
 
-        $item->cart_id = $cart->id;
-        $item->product_id = $productId;
-        $item->quantity = $quantity;
+        // $item->cart_id = $cart->id;
+        // $item->product_id = $productId;
+        // $item->quantity = $quantity;
 
-        $item->save();
+        // $item->save();
+
+        DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity', [$cart->id, $productId, $quantity]);
+
+        return json_encode($cart);
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $productId = $request->input('product_id');
+        $userId = auth()->user()->id;
+
+        $cart = Cart::where('user_id', $userId)->first();
+
+        $item = CartItem::where(['cart_id', '=', $cart->id], ['product_id', '=', $productId])->first();
+
+        $item->delete();
 
         return json_encode($cart);
     }

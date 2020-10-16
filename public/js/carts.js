@@ -6,8 +6,8 @@ $(document).ready(function() {
     let productName = $(this).parent().parent().parent().find(".block2-name").html();
 
     $(this).on("click", function() {
-      let productSKU = $(this).attr("data-sku");
-      addToCart(productSKU, productName);
+      let productId = $(this).data('productId');
+      addToCart(productId, productName);
     });
   });
 
@@ -20,8 +20,8 @@ $(document).ready(function() {
       let quantity = $("#num-product").val();
       quantity = quantityHandler(quantity);
 
-      // get product sku
-      let productId = $(this).data('product-id');
+      // get product id
+      let productId = $(this).data('productId');
 
       addToCart(productId, productName, quantity);
     });
@@ -55,35 +55,30 @@ $(document).ready(function() {
 
   // Add to cart (with AJAX)
   function addToCart(productId, productName, quantity = 1) {
+    let _token = $('meta[name="csrf-token"]').attr('content');
+
     let data = {
       product_id: productId,
-      quantity: quantity
+      quantity: quantity,
+      _token: _token
     };
 
     let json = JSON.stringify(data);
+    console.log(productId + "aaaaaaaaaaa");
 
     jQuery.ajax({
+      // method: "POST",
       type: "POST",
       url: "/cart/addtocart/",
       data: json,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(response) {
-        console.log(response);
-        // data = JSON.parse(data);
-        // if (data["status"] == true) {
         // load total carts (main.js)
-        // loadTotalCart();
+        loadTotalCart();
 
         // Alert using sweetalert
-        //   swal(productName, "is added to cart !", "success");
-        // } else if (data["status"] == "out_of_stock") {
-        //   swal("Oops", "Product is out of stock", "error");
-        // } else if (data["status"] == "less_than_required") {
-        //   swal("Oops", "Product is less than required", "error");
-        // } else {
-        //   swal("Oops", "Something went wrong", "error");
-        // }
+        swal(productName, "is added to cart !", "success");
       },
     });
   }
