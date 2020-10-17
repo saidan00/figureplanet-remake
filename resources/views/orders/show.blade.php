@@ -27,7 +27,7 @@
       <td>
         <div class="order-details-img"><img src="{{ asset($item->product->images[0]->path) }}"></div>
       </td>
-      <td class="p-r-10"><a href="products/{{ $item->product->sku }}">{{ $item->product->name }}</a>
+      <td class="p-r-10"><a href="/products/{{ $item->product->sku }}">{{ $item->product->name }}</a>
       </td>
       <td>{{ number_format($item->price, 0) }}</td>
       <td>{{ $item->quantity }}</td>

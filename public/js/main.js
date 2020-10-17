@@ -253,7 +253,7 @@ function quantityHandler(num) {
   if (num == "" || num < 1 || isNaN(num)) {
     num = 1;
   }
-  return num;
+  return parseInt(num);
 }
 
 // my to fixed (from stackoverflow)

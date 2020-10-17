@@ -41,19 +41,11 @@ $(document).ready(function() {
     swal("", "Invalid Code", "error");
   });
 
-  // remove from cart
+  // button remove from cart
   $(document).on("click", ".cart-img-product", function() {
     let productId = $(this).data('productId');
 
     removeFromCart(productId);
-
-    // jQuery.ajax({
-    //   url: URLROOT + "/carts/removeFromCart/" + productSKU,
-    //   type: "POST",
-    //   success: function(data) {
-    //     loadCart();
-    //   },
-    // });
   });
 
   // Remove from cart (with AJAX)
@@ -68,17 +60,12 @@ $(document).ready(function() {
     let json = JSON.stringify(data);
 
     $.ajax({
-      // method: "POST",
       url: "/cart/removefromcart",
       type: "POST",
       data: json,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(response) {
-        console.log(response)
-          // load total carts (main.js)
-        loadTotalCart();
-
         $('#product-' + productId).remove();
         loadCart(response);
       },
@@ -98,7 +85,6 @@ $(document).ready(function() {
     let json = JSON.stringify(data);
 
     $.ajax({
-      // method: "POST",
       url: "/cart/addtocart",
       type: "POST",
       data: json,
@@ -115,15 +101,30 @@ $(document).ready(function() {
   }
 
   // update cart
-  function updateCart(productSKU, quantity) {
+  function updateCart(productId, quantity, row) {
+    let _token = $('meta[name="csrf-token"]').attr('content');
+
+    let data = {
+      product_id: productId,
+      quantity: quantity,
+      _token: _token
+    };
+
+    let json = JSON.stringify(data);
+
     jQuery.ajax({
-      url: URLROOT + "/carts/updateCart/" + productSKU + "/" + quantity,
+      url: "/cart/updatecart",
       type: "POST",
-      success: function(data) {
-        data = JSON.parse(data);
-        if (data["status"] == "less_than_required") {
-          swal("Oops", "Product is less than required", "error");
-        }
+      data: json,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(response) {
+        // console.log(response);
+        let item = response.cart_items.filter(i => i.product.id == productId)[0];
+
+        $(row).find('.column-5')[0].innerHTML = item.total;
+
+        loadCart(response);
       },
     });
   }
@@ -131,35 +132,30 @@ $(document).ready(function() {
   // reload cart
   function loadCart(cart) {
     if ($('#table-shopping-cart tr').length == 1) {
-      // $('#table-shopping-cart').remove();
-      // $('#cart-totals').remove();
-      // location.reload();
       $("#cart-logged-in").attr("class", "bg-title-page p-t-50 p-b-40 flex-col-c-m");
       $("#cart-logged-in").html(
-        "" + "<h2>Nothing to show</h2>" + "<p>" + "Your cart is empty. Please buy something." + "</p>"
+        "<h2>Nothing to show</h2>" + "<p>" + "Your cart is empty. Please buy something." + "</p>"
       );
     } else {
       $("[data-name='sub-total']").html(cart.subtotal);
       $("[data-name='shipping']").html(cart.shipping_fee);
       $("[data-name='total']").html(cart.total);
-
-      loadTotalCart();
     }
+    loadTotalCart();
   }
 
   // using to bind again event after ajax
   function bindEvent() {
     // update cart
     $("[data-name='cart']").each(function() {
-      let productSKU = $(this).attr("data-sku"); // "this" here is ".table-row" element
+      let row = $(this)[0];
+      let productId = $(this).data("productId"); // "this" here is ".table-row" element
       $(this)
         .find("input")
         .change(function() {
-          let quantity = $(this).val(); // "this" here is input element
+          let quantity = quantityHandler($(this).val()); // "this" here is input element
 
-          updateCart(productSKU, quantity);
-
-          // loadCart();
+          updateCart(productId, quantity, row);
         });
     });
   }

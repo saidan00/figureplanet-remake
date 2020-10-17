@@ -93,7 +93,7 @@ class OrdersController extends Controller
             $item->delete();
         }
 
-        return view('carts.index');
+        return redirect('cart');
     }
 
     /**

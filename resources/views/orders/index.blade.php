@@ -21,7 +21,7 @@
             <td><a class="text-primary" href="/user/orders/{{ $item->id }}">{{ $item->id }}</a>
             </td>
             <td>{{ $item->created_at }}</td>
-            <td>{{ $item->total }}</td>
+            <td>{{ number_format($item->total, 0) }}</td>
             <td>{{ $item->order_status->name }}</td>
           </tr>
           @endforeach

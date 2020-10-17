@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class CartItem extends Model
 {
@@ -22,5 +23,11 @@ class CartItem extends Model
     public function getTotalAttribute()
     {
         return $this->product->price * $this->quantity;
+    }
+
+    protected function setKeysForSaveQuery(Builder $query)
+    {
+        return $query->where('cart_id', $this->getAttribute('cart_id'))
+            ->where('product_id', $this->getAttribute('product_id'));
     }
 }

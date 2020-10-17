@@ -18,7 +18,7 @@ class CartItem extends JsonResource
         return [
             'quantity' => $this->quantity,
             'product' => $this->product,
-            'total' => $this->total
+            'total' => number_format($this->total, 0)
         ];
     }
 }

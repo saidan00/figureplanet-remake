@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Cart;
 use App\CartItem;
 use App\Http\Resources\Cart as CartResource;
+use App\Http\Resources\CartItem as CartItemResource;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -76,9 +77,33 @@ class CartsController extends Controller
         }
 
         // INSERT ON DUPLICATE KEY UPDATE
-        DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity', [$cart->id, $productId, $quantity]);
+        DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity, created_at, updated_at) VALUES(?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity',  [$cart->id, $productId, $quantity]);
 
         return json_encode($cart);
+    }
+
+    /**
+     * AJAX (POST): Update cart
+     */
+    public function updateCart(Request $request)
+    {
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity');
+        $userId = auth()->user()->id;
+
+        // fn(): arrow function in PHP
+        $cart = Cart::where('user_id', $userId)
+            ->first();
+
+        $item = CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $productId)
+            ->first();
+
+        $item->quantity = $quantity;
+        $item->save();
+
+        return new CartResource($cart);
+        // return json_encode($item);
     }
 
     /**

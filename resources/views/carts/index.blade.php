@@ -35,7 +35,7 @@
 
             @foreach ($cart->cart_items as $item)
             <!-- load cart -->
-            <tr id="product-{{ $item->product->id }}" class="table-row" data-sku="" data-name="cart">
+            <tr id="product-{{ $item->product->id }}" class="table-row" data-product-id="{{ $item->product->id }}" data-name="cart">
               <td class="column-1">
                 <div class="cart-img-product b-rad-4 o-f-hidden" data-product-id="{{ $item->product->id }}">
                   <img src="{{ asset($item->product->images[0]->path) }}" alt="IMG-PRODUCT">
