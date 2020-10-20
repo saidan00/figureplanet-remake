@@ -25,7 +25,31 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Order::with(['order_details', 'user', 'order_status'])
-            ->where('user_id', auth()->user()->id)->get();
+            ->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
+
+        foreach ($orders as $item) {
+            $item->statusClassName = '';
+
+            switch ($item->order_status->name) {
+                case 'Canceled':
+                    $item->statusClassName = 'text-danger';
+                    break;
+                case 'Processing':
+                    $item->statusClassName = 'text-warning';
+                    break;
+                case 'Delivering':
+                    $item->statusClassName = 'text-info';
+                    break;
+                case 'Pending':
+                    $item->statusClassName = 'text-muted';
+                    break;
+                case 'Completed':
+                    $item->statusClassName = 'text-success';
+                    break;
+                default:
+                    break;
+            }
+        }
         $currentRoute = Route::currentRouteName();
 
         return view('orders.index')->with(['orders' => $orders, 'currentRoute' => $currentRoute]);
@@ -93,7 +117,25 @@ class OrdersController extends Controller
             $item->delete();
         }
 
-        return redirect('cart');
+        return redirect('user/orders');
+    }
+
+    public function cancelOrder(Request $request)
+    {
+        $userId = auth()->user()->id;
+        $orderId = $request->input('order_id');
+
+        $order = Order::where('user_id', $userId)
+            ->where('id', $orderId)
+            ->first();
+
+        $orderStatus = OrderStatus::where('name', 'Canceled')->first();
+
+        $order->order_status_id = $orderStatus->id;
+
+        $order->save();
+
+        return redirect()->back();
     }
 
     /**

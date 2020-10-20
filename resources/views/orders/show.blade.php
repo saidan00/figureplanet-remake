@@ -9,7 +9,7 @@
   </a>
 
   <span class="s-text17">
-    {{ $order->id }}
+    {{ $order->id . ' (' . $order->order_status->name . ')'}}
   </span>
 </div>
 
@@ -38,46 +38,62 @@
 
   <div class="row mt-5">
     <div class="col-lg-8">
-    <div class="card card-body">
-      <table>
-        <tr>
-          <td class="font-weight-bold">Phone:</td>
-          <td class="p-l-10">{{ $order->phone }}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Address:</td>
-          <td class="p-l-10">{{ $order->address }}</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Payment method:</td>
-          <td class="p-l-10">{{ $order->payment_method->name }}</td>
-        </tr>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Status:</td>
-          <td class="p-l-10">{{ $order->order_status->name }}</td>
-        </tr>
-      </table>
-    </div>
+      <div class="card card-body">
+        <table>
+          <tr>
+            <td class="font-weight-bold">Receiver:</td>
+            <td class="p-l-10">{{ $order->receiver_name }}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Phone:</td>
+            <td class="p-l-10">{{ $order->phone }}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Address:</td>
+            <td class="p-l-10">{{ $order->address }}</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Payment method:</td>
+            <td class="p-l-10">{{ $order->payment_method->name }}</td>
+          </tr>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Status:</td>
+            <td class="p-l-10">{{ $order->order_status->name }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
     <div class="col-lg-4">
-    <div class="card card-body">
-      <table>
-        <tr>
-          <td class="font-weight-bold">Subtotal:</td>
-          <td class="p-l-10">{{ number_format($order->subtotal, 0) }} VND</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Shipping:</td>
-          <td class="p-l-10">{{ number_format($order->shipping_fee, 0) }} VND</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold">Total:</td>
-          <td class="p-l-10">{{ number_format($order->total, 0) }} VND</td>
-        </tr>
-      </table>
-    </div>
+      <div class="card card-body">
+        <table>
+          <tr>
+            <td class="font-weight-bold">Subtotal:</td>
+            <td class="p-l-10">{{ number_format($order->subtotal, 0) }} VND</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Shipping:</td>
+            <td class="p-l-10">{{ number_format($order->shipping_fee, 0) }} VND</td>
+          </tr>
+          <tr>
+            <td class="font-weight-bold">Total:</td>
+            <td class="p-l-10">{{ number_format($order->total, 0) }} VND</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
+
+  @if ($order->order_status->name == 'Pending')
+  <form action="/orders/cancelorder" method="post" name="cancel-form">
+    @csrf
+    <div class="size9 trans-0-4 mt-5">
+      <input type="hidden" name="order_id" value="{{ $order->id }}">
+      <!-- Button -->
+      <input type="submit" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4" value="Cancel"  id="cancel-btn">
+    </div>
+  </form>
+  @endif
 </div>
+<script src="{{ asset('/js/checkout-btn.js')}}"></script>
 @endsection

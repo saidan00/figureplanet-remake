@@ -20,9 +20,9 @@
           <tr>
             <td><a class="text-primary" href="/user/orders/{{ $item->id }}">{{ $item->id }}</a>
             </td>
-            <td>{{ $item->created_at }}</td>
+            <td>{{ $item->created_at->format('d/m/Y - H:i') }}</td>
             <td>{{ number_format($item->total, 0) }}</td>
-            <td>{{ $item->order_status->name }}</td>
+          <td class="{{ $item->statusClassName }} font-weight-bold">{{ $item->order_status->name }}</td>
           </tr>
           @endforeach
         </table>

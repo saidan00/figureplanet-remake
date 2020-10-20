@@ -164,5 +164,6 @@
     </div>
   </div>
 </div>
+<script src="{{ asset('/js/checkout-btn.js')}}"></script>
 @endif
 @endsection

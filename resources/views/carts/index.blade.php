@@ -10,6 +10,16 @@
 </section>
 
 <!-- Cart -->
+@guest
+<section id="cart-logged-in" class="bg-title-page p-t-50 p-b-40 flex-col-c-m">
+  <h2>Login required</h2>
+  <p>
+    Please login to view your cart.
+  </p>
+</section>
+@endguest
+
+@auth
 @if (!isset($cart->cart_items) || count($cart->cart_items) == 0)
 <section id="cart-logged-in" class="bg-title-page p-t-50 p-b-40 flex-col-c-m">
   <h2>Nothing to show</h2>
@@ -18,6 +28,8 @@
   </p>
 </section>
 @else
+@endauth
+
 <section id="cart-logged-in" class="cart bgwhite p-t-70 p-b-100">
   <div class="container">
     <!-- Cart item -->
@@ -35,7 +47,8 @@
 
             @foreach ($cart->cart_items as $item)
             <!-- load cart -->
-            <tr id="product-{{ $item->product->id }}" class="table-row" data-product-id="{{ $item->product->id }}" data-name="cart">
+            <tr id="product-{{ $item->product->id }}" class="table-row" data-product-id="{{ $item->product->id }}"
+              data-name="cart">
               <td class="column-1">
                 <div class="cart-img-product b-rad-4 o-f-hidden" data-product-id="{{ $item->product->id }}">
                   <img src="{{ asset($item->product->images[0]->path) }}" alt="IMG-PRODUCT">
@@ -50,7 +63,8 @@
                     <i class="fs-12 fa fa-minus" aria-hidden="true"></i>
                   </button>
 
-                  <input class="size8 m-text18 t-center num-product" type="number" name="num-product1" value="{{ $item->quantity }}">
+                  <input class="size8 m-text18 t-center num-product" type="number" name="num-product1"
+                    value="{{ $item->quantity }}">
 
                   <button class="btn-num-product-up color1 flex-c-m size7 bg8 eff2">
                     <i class="fs-12 fa fa-plus" aria-hidden="true"></i>

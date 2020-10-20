@@ -220,9 +220,14 @@
   <div id="dropDownSelect1"></div>
   <div id="dropDownSelect2"></div>
 
-  <script src="{{ asset('js/carts.js') }}"></script>
   <script type="text/javascript" src="{{ asset('js/slick-custom.js') }}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
+  @auth
+  <script src="{{ asset('js/carts.js') }}"></script>
+  @endauth
+  @guest
+  <script src="{{ asset('js/carts-unloggedin.js') }}"></script>
+  @endguest
 
 </body>
 

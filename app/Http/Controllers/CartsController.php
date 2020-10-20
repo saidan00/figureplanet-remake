@@ -7,6 +7,7 @@ use App\Cart;
 use App\CartItem;
 use App\Http\Resources\Cart as CartResource;
 use App\Http\Resources\CartItem as CartItemResource;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -78,7 +79,6 @@ class CartsController extends Controller
 
         // INSERT ON DUPLICATE KEY UPDATE
         DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity, created_at, updated_at) VALUES(?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity',  [$cart->id, $productId, $quantity]);
-
         return json_encode($cart);
     }
 

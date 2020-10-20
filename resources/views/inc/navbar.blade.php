@@ -56,7 +56,7 @@
               alt="ICON">
           </a>
           <span class="header-icons-noti">
-            7
+            0
           </span>
 
         </div>

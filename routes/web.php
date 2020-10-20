@@ -47,5 +47,6 @@ Route::post('cart/updatecart', 'CartsController@updateCart')->middleware('auth')
 Route::post('cart/removefromcart', 'CartsController@removeFromCart')->middleware('auth');
 
 Route::post('orders/create', 'OrdersController@create')->middleware('auth');
+Route::post('orders/cancelorder', 'OrdersController@cancelOrder')->middleware('auth');
 
 Auth::routes();
