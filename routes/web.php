@@ -46,7 +46,15 @@ Route::post('cart/addtocart', 'CartsController@addToCart')->middleware('auth');
 Route::post('cart/updatecart', 'CartsController@updateCart')->middleware('auth');
 Route::post('cart/removefromcart', 'CartsController@removeFromCart')->middleware('auth');
 
+// Order
 Route::post('orders/create', 'OrdersController@create')->middleware('auth');
 Route::post('orders/cancelorder', 'OrdersController@cancelOrder')->middleware('auth');
+
+// Admin
+Route::prefix('admin')->middleware(['role:admin'])->group( function() {
+    Route::get('', function() {
+        echo 'Hello Admin';
+    });
+});
 
 Auth::routes();
