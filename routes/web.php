@@ -55,6 +55,8 @@ Route::prefix('admin')->middleware(['role:admin'])->group( function() {
     Route::get('', function() {
         echo 'Hello Admin';
     });
+    Route::get('products', 'AdminController@getProducts');
+    Route::get('products/{sku}', 'AdminController@showProduct');
 });
 
 Auth::routes();

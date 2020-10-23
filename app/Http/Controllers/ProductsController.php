@@ -15,7 +15,7 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::with(['category', 'images']);
+        $products = Product::with(['category', 'images'])->where('is_available', true);
         $categories = Category::all();
 
         // filter by category
