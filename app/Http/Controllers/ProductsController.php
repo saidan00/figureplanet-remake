@@ -95,7 +95,7 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $sku
      * @return \Illuminate\Http\Response
      */
     public function show($sku)

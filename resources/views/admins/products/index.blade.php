@@ -6,6 +6,10 @@
 </div>
 
 <div class="mb-3">
+  <span><a class="font-weight-bold" href="/admin/products/addproduct">Add product</a></span>
+</div>
+
+<div class="mb-3">
   Price:
   <input type="text" id="min" placeholder="Min">
   <input type="text" id="max" placeholder="Max">
@@ -35,7 +39,7 @@
         <td>{{ $item->category->name }}</td>
         <td>{{ $item->is_available ? 'Yes' : 'No' }}</td>
         <td>
-          <a href="/admin/products/{{ $item->sku }}" target="_blank"><i class="fa fa-edit fa-lg text-dark"></i></a>
+          <a href="/admin/products/{{ $item->sku }}" title="Edit product"><i class="fa fa-edit fa-lg text-dark"></i></a>
         </td>
       </tr>
       @endforeach

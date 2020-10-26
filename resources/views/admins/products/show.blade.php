@@ -3,12 +3,14 @@
 @section('content')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h1 class="h2">Edit product</h1>
+  <a class="font-weight-bold" href="/admin/products/">&lt;&lt;Back</a>
 </div>
 
 <div class="container">
   <div class="card">
     <div class="card-body mx-auto">
-      <span><a href="/products/{{ $product->sku }}" target="_blank">To product page &gt;&gt;</a></span>
+      <span><a class="font-weight-bold" href="/products/{{ $product->sku }}" target="_blank">To product
+          page&gt;&gt;</a></span>
 
       @include('inc.flash')
 
@@ -50,24 +52,14 @@
             @enderror
           </div>
 
-          <div class="form-group col-sm-2">
-            <label for="price">Price <span class="text-danger small font-weight-bold">*</span></label>
+          <div class="form-group col-sm-4">
+            <label for="price">Price: <span id="formatted-price">{{ number_format($product->price, 0) }}</span> <span
+                class="text-danger small font-weight-bold">*</span></label>
             <div class="text-danger small font-weight-bold">
               <input type="number" name="price" class="form-control @error('price') is-invalid @enderror"
                 value="{{ $product->price }}" placeholder="Price">
             </div>
             @error('price')
-            <span class="text-danger small">{{ $message }}</span>
-            @enderror
-          </div>
-
-          <div class="form-group col-sm-2">
-            <label for="quantity">Quantity <span class="text-danger small font-weight-bold">*</span></label>
-            <div class="text-danger small font-weight-bold">
-              <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror"
-                value="{{ $product->quantity }}" placeholder="Quantity">
-            </div>
-            @error('quantity')
             <span class="text-danger small">{{ $message }}</span>
             @enderror
           </div>
@@ -89,7 +81,11 @@
           <div class="form-group col-sm-12">
             <label for="fileImg" class="col-form-label">Image <span
                 class="text-danger small font-weight-bold">*</span></label>
-            <input type="file" class="form-control-file" name="fileImg">
+            <div>
+              <img id="img-product" src="{{ asset($product->images[0]->path) }}" alt="IMG-PRODUCT" style="width: 30%"
+                class="mb-2">
+            </div>
+            <input type="file" class="form-control-file" name="fileImg" onchange="readURL(this);">
             @error('description')
             <span class="text-danger small">{{ $message }}</span>
             @enderror
@@ -101,4 +97,5 @@
     </div>
   </div>
 </div>
+<script src="{{ asset('js/show-image.js') }}"></script>
 @endsection
