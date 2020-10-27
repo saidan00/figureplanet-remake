@@ -100,7 +100,11 @@ class ProductsController extends Controller
      */
     public function show($sku)
     {
-        $product = Product::with(['category', 'images'])->where('sku', $sku)->first();
+        $product = Product::with(['category', 'images'])->where('sku', $sku)->where('is_available', true)->first();
+
+        if ($product == null) {
+            return abort(404);
+        }
 
         return view('products.show')->with(['product' => $product]);
 

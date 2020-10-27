@@ -39,7 +39,7 @@
         <td>{{ $item->category->name }}</td>
         <td>{{ $item->is_available ? 'Yes' : 'No' }}</td>
         <td>
-          <a href="/admin/products/{{ $item->sku }}" title="Edit product"><i class="fa fa-edit fa-lg text-dark"></i></a>
+          <a href="/admin/products/edit/{{ $item->sku }}" title="Edit product"><i class="fa fa-edit fa-lg text-dark"></i></a>
         </td>
       </tr>
       @endforeach

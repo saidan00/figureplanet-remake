@@ -56,7 +56,10 @@ Route::prefix('admin')->middleware(['role:admin'])->group( function() {
         echo 'Hello Admin';
     });
     Route::get('products', 'AdminController@getProducts');
-    Route::get('products/{sku}', 'AdminController@showProduct');
+    Route::get('products/addproduct', 'AdminController@addProduct');
+    Route::get('products/edit/{sku}', 'AdminController@showProduct');
+    Route::post('products/storeproduct', 'AdminController@storeProduct');
+    Route::post('products/updateproduct/{id}', 'AdminController@updateProduct');
 });
 
 Auth::routes();

@@ -57,7 +57,7 @@
 
         <div class="dropdown-content dis-none p-t-15 p-b-23">
           <p class="s-text8">
-            {{ $product->description }}
+            {!! nl2br($product->description) !!}
           </p>
         </div>
       </div>
