@@ -14,7 +14,7 @@
 
       @include('inc.flash')
 
-      <form name="edit-product" method="POST" action="/admin/products/updateproduct/{{ $product->id }}"
+      <form name="edit-product" method="POST" action="/admin/products/update/{{ $product->id }}"
         enctype="multipart/form-data">
         @csrf
         <div class="row">

@@ -12,7 +12,7 @@
 
       @include('inc.flash')
 
-      <form name="edit-product" method="POST" action="/admin/products/storeproduct" enctype="multipart/form-data">
+      <form name="edit-product" method="POST" action="/admin/products/store" enctype="multipart/form-data">
         @csrf
         <div class="row">
           <div class="form-group col-sm-5">
@@ -83,7 +83,7 @@
           </div>
         </div>
 
-        <input type="submit" class="btn btn-primary mt-4 pr-4 pl-4" value="Update">
+        <input type="submit" class="btn btn-primary mt-4 pr-4 pl-4" value="Add">
       </form>
     </div>
   </div>

@@ -8,8 +8,7 @@ use App\MediaFileUsage;
 use Illuminate\Http\Request;
 use App\User;
 use App\Product;
-use GuzzleHttp\Handler\Proxy;
-use phpDocumentor\Reflection\Types\Void_;
+use Illuminate\Support\Facades\Route;
 
 class AdminController extends Controller
 {
@@ -34,8 +33,9 @@ class AdminController extends Controller
     public function getProducts()
     {
         $products = Product::with(['category', 'images'])->get();
+        $currentRoute = Route::currentRouteName();
 
-        return view('admins.products.index')->with(['products' => $products]);
+        return view('admins.products.index')->with(['products' => $products, 'currentRoute' => $currentRoute]);
         // echo json_encode($products);
     }
 
@@ -45,19 +45,21 @@ class AdminController extends Controller
      * @param  string  $sku
      * @return \Illuminate\View\View
      */
-    public function showProduct(string $sku)
+    public function editProduct(string $sku)
     {
         $product = Product::with(['category', 'images'])->where('sku', $sku)->first();
         $categories = Category::all();
+        $currentRoute = Route::currentRouteName();
 
-        return view('admins.products.show')->with(['product' => $product, 'categories' => $categories]);
+        return view('admins.products.edit')->with(['product' => $product, 'categories' => $categories, 'currentRoute' => $currentRoute]);
     }
 
     public function addProduct()
     {
         $categories = Category::all();
+        $currentRoute = Route::currentRouteName();
 
-        return view('admins.products.create')->with(['categories' => $categories]);
+        return view('admins.products.create')->with(['categories' => $categories, 'currentRoute' => $currentRoute]);
     }
 
     /**

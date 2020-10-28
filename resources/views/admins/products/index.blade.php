@@ -6,7 +6,7 @@
 </div>
 
 <div class="mb-3">
-  <span><a class="font-weight-bold" href="/admin/products/addproduct">Add product</a></span>
+  <span><a class="font-weight-bold" href="/admin/products/add">Add product</a></span>
 </div>
 
 <div class="mb-3">

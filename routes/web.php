@@ -51,15 +51,16 @@ Route::post('orders/create', 'OrdersController@create')->middleware('auth');
 Route::post('orders/cancelorder', 'OrdersController@cancelOrder')->middleware('auth');
 
 // Admin
-Route::prefix('admin')->middleware(['role:admin'])->group( function() {
+Route::prefix('admin')->middleware(['role:admin'])->group(function() {
     Route::get('', function() {
         echo 'Hello Admin';
     });
-    Route::get('products', 'AdminController@getProducts');
-    Route::get('products/addproduct', 'AdminController@addProduct');
-    Route::get('products/edit/{sku}', 'AdminController@showProduct');
-    Route::post('products/storeproduct', 'AdminController@storeProduct');
-    Route::post('products/updateproduct/{id}', 'AdminController@updateProduct');
+
+    Route::get('products', 'AdminController@getProducts')->name('admin.products.index');
+    Route::get('products/add', 'AdminController@addProduct')->name('admin.products.add');
+    Route::get('products/edit/{sku}', 'AdminController@editProduct')->name('admin.products.edit');
+    Route::post('products/store', 'AdminController@storeProduct')->name('admin.products.store');
+    Route::post('products/update/{id}', 'AdminController@updateProduct')->name('admin.products.update');
 });
 
 Auth::routes();

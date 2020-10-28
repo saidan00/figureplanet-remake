@@ -50,7 +50,10 @@
     </button>
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
-        <a class="nav-link" href="#">Sign out</a>
+        <form action="{{ route('logout') }}" method="POST">
+          @csrf
+          <input id="btn-signout" class="nav-link" type="submit" value="Sign out">
+        </form>
       </li>
     </ul>
   </nav>
