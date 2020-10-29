@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\MediaFile;
 use App\MediaFileUsage;
+use App\Order;
 use Illuminate\Http\Request;
 use App\User;
 use App\Product;
@@ -168,5 +169,17 @@ class AdminController extends Controller
                 return $sku;
             }
         }
+    }
+
+    /**
+     *  Show all orders
+     *
+     * @return \Illuminate\View\View
+     */
+    public function getOrders() {
+        $orders = Order::with(['user', 'order_status'])->get();
+        $currentRoute = Route::currentRouteName();
+
+        return view('admins.orders.index')->with(['orders' => $orders, 'currentRoute' => $currentRoute]);
     }
 }

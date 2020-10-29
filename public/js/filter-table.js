@@ -1,27 +1,52 @@
 $(document).ready(function() {
-  $.fn.dataTable.ext.search.push(
-    function(settings, data, dataIndex) {
-      var min = $('#min').val();
-      var max = $('#max').val();
-      var age = data[3] || 0; // use data for the price column
+  if ($('#products-table').length) {
+    $.fn.dataTable.ext.search.push(
+      function(settings, data, dataIndex) {
+        var min = $('#min-price').val();
+        var max = $('#max-price').val();
+        var age = data[3] || 0; // use data for the price column
 
-      age = age.replace(/,/g, '');
-      min = min.replace(/,/g, '');
-      max = max.replace(/,/g, '');
+        age = age.replace(/,/g, '');
+        min = min.replace(/,/g, '');
+        max = max.replace(/,/g, '');
 
-      age = parseInt(age, 10);
-      min = parseInt(min, 10);
-      max = parseInt(max, 10);
+        age = parseInt(age, 10);
+        min = parseInt(min, 10);
+        max = parseInt(max, 10);
 
-      if ((isNaN(min) && isNaN(max)) ||
-        (isNaN(min) && age <= max) ||
-        (min <= age && isNaN(max)) ||
-        (min <= age && age <= max)) {
-        return true;
+        if ((isNaN(min) && isNaN(max)) ||
+          (isNaN(min) && age <= max) ||
+          (min <= age && isNaN(max)) ||
+          (min <= age && age <= max)) {
+          return true;
+        }
+        return false;
       }
-      return false;
-    }
-  );
+    );
+  } else if ($('#orders-table').length) {
+    $.fn.dataTable.ext.search.push(
+      function(settings, data, dataIndex) {
+        var fromDate = $('#from-date').val();
+        var toDate = $('#to-date').val();
+        var date = data[1] || 0; // use data for the date column
+
+        date = date.split(' - ')[0];
+        // console.log(date);
+        date = date.split('/');
+        // console.log(date[2] + "-" + date[1] + "-" + date[0]);
+
+        date = new Date(date[2] + "-" + date[1] + "-" + date[0]);
+        fromDate = new Date(fromDate);
+        toDate = new Date(toDate);
+
+        if (date.getTime() >= fromDate.getTime()) {
+          return true;
+        }
+
+        return false;
+      }
+    );
+  }
 
   // Setup - add a text input to each footer cell
   // $('#products-table thead tr').clone(true).appendTo('#products-table thead');
@@ -40,7 +65,7 @@ $(document).ready(function() {
   // });
 
   // products table
-  var productTable = $('#products-table').DataTable({
+  let productsTable = $('#products-table').DataTable({
     orderCellsTop: true,
     'fixedHeader': true,
     columnDefs: [{
@@ -50,26 +75,29 @@ $(document).ready(function() {
   });
 
   // filter min max price
-  $('#min, #max').on('keyup', function() {
+  $('#min-price, #max-price').on('keyup', function() {
     if ($(this).val() != '') {
       var n = parseInt($(this).val().replace(/\D/g, ''), 10);
       $(this).val(n.toLocaleString());
-      productTable.draw();
+      productsTable.draw();
     }
   });
 
-
-
-  // users table
-  $('#users-table').DataTable({
+  // orders table
+  let ordersTable = $('#orders-table').DataTable({
     "columnDefs": [{
       "orderable": false,
       "targets": -1
     }]
   });
 
-  // orders table
-  $('#orders-table').DataTable({
+  // filter by date
+  $('#from-date, #to-date').on('change', function() {
+    ordersTable.draw();
+  });
+
+  // users table
+  $('#users-table').DataTable({
     "columnDefs": [{
       "orderable": false,
       "targets": -1

@@ -8,7 +8,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ strpos($currentRoute, 'admin.orders') !== false ? 'active' : '' }}" href="/admins/orders">
+        <a class="nav-link {{ strpos($currentRoute, 'admin.orders') !== false ? 'active' : '' }}" href="/admin/orders">
           <i class="fa fa-file-o" aria-hidden="true"></i>
           Orders
         </a>
