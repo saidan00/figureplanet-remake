@@ -2,9 +2,9 @@ $(document).ready(function() {
   if ($('#products-table').length) {
     $.fn.dataTable.ext.search.push(
       function(settings, data, dataIndex) {
-        var min = $('#min-price').val();
-        var max = $('#max-price').val();
-        var age = data[3] || 0; // use data for the price column
+        let min = $('#min-price').val();
+        let max = $('#max-price').val();
+        let age = data[3] || 0; // use data for the price column
 
         age = age.replace(/,/g, '');
         min = min.replace(/,/g, '');
@@ -26,24 +26,34 @@ $(document).ready(function() {
   } else if ($('#orders-table').length) {
     $.fn.dataTable.ext.search.push(
       function(settings, data, dataIndex) {
-        var fromDate = $('#from-date').val();
-        var toDate = $('#to-date').val();
-        var date = data[1] || 0; // use data for the date column
+        let fromDate = $('#from-date').val();
+        let toDate = $('#to-date').val();
+        let date = data[1] || 0; // use data for the date column
 
         date = date.split(' - ')[0];
-        // console.log(date);
         date = date.split('/');
-        // console.log(date[2] + "-" + date[1] + "-" + date[0]);
 
         date = new Date(date[2] + "-" + date[1] + "-" + date[0]);
         fromDate = new Date(fromDate);
         toDate = new Date(toDate);
 
-        if (date.getTime() >= fromDate.getTime()) {
-          return true;
+        date = date.getTime();
+        fromDate = fromDate.getTime();
+        toDate = toDate.getTime();
+
+        let result = false;
+
+        if (isNaN(fromDate) && isNaN(toDate)) {
+          result = true;
+        } else if (isNaN(fromDate) && date <= toDate) {
+          result = true;
+        } else if (isNaN(toDate) && date >= fromDate) {
+          result = true;
+        } else if (date >= fromDate && date <= toDate) {
+          result = true;
         }
 
-        return false;
+        return result;
       }
     );
   }
@@ -76,8 +86,8 @@ $(document).ready(function() {
 
   // filter min max price
   $('#min-price, #max-price').on('keyup', function() {
-    if ($(this).val() != '') {
-      var n = parseInt($(this).val().replace(/\D/g, ''), 10);
+    if ($(this).val() !== '') {
+      let n = parseInt($(this).val().replace(/\D/g, ''), 10);
       $(this).val(n.toLocaleString());
       productsTable.draw();
     }
@@ -85,7 +95,10 @@ $(document).ready(function() {
 
   // orders table
   let ordersTable = $('#orders-table').DataTable({
-    "columnDefs": [{
+    order: [
+      [1, "desc"]
+    ],
+    columnDefs: [{
       "orderable": false,
       "targets": -1
     }]
@@ -94,6 +107,12 @@ $(document).ready(function() {
   // filter by date
   $('#from-date, #to-date').on('change', function() {
     ordersTable.draw();
+  });
+
+  // refresh date
+  $('#refresh-date').on('click', function() {
+    $("input[type=date]").val("");
+    $('#from-date, #to-date').trigger('change');
   });
 
   // users table

@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Category;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class ProductsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Application|Factory|Response|View
      */
     public function index(Request $request)
     {
@@ -45,8 +50,6 @@ class ProductsController extends Controller
         // order by
         if ($request->has('sort')) {
             switch ($request->input('sort')) {
-                case 'default':
-                    break;
                 case 'a-to-z':
                     $products = $products->orderBy('name');
                     break;
@@ -74,7 +77,7 @@ class ProductsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -85,7 +88,7 @@ class ProductsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -95,10 +98,10 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $sku
-     * @return \Illuminate\Http\Response
+     * @param string $sku
+     * @return Application|Factory|View|void
      */
-    public function show($sku)
+    public function show(string $sku)
     {
         $product = Product::with(['category', 'images'])->where('sku', $sku)->where('is_available', true)->first();
 
@@ -107,7 +110,6 @@ class ProductsController extends Controller
         }
 
         return view('products.show')->with(['product' => $product]);
-
         // echo json_encode($product);
     }
 
@@ -115,7 +117,7 @@ class ProductsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -127,7 +129,7 @@ class ProductsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -138,7 +140,7 @@ class ProductsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

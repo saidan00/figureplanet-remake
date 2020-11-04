@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use SoftDeletes;
+
     // Table Name
     protected $table = 'products';
     // Primary Key
@@ -15,7 +16,8 @@ class Product extends Model
     // Timestamps
     public $timestamps = true;
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo('App\Category');
     }
 

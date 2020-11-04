@@ -9,6 +9,7 @@
   Date:
   <input type="date" id="from-date" placeholder="from">
   <input type="date" id="to-date" placeholder="to">
+  <input type="button" id="refresh-date" value="Refresh">
 </div>
 
 <div class="table-responsive mb-5">

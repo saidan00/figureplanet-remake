@@ -49,6 +49,11 @@ class AdminController extends Controller
     public function editProduct(string $sku)
     {
         $product = Product::with(['category', 'images'])->where('sku', $sku)->first();
+
+        if ($product == null) {
+            return abort(404);
+        }
+
         $categories = Category::all();
         $currentRoute = Route::currentRouteName();
 
@@ -177,9 +182,21 @@ class AdminController extends Controller
      * @return \Illuminate\View\View
      */
     public function getOrders() {
-        $orders = Order::with(['user', 'order_status'])->get();
+        $orders = Order::with(['user', 'order_status'])->orderBy('created_at', 'desc')->get();
         $currentRoute = Route::currentRouteName();
 
         return view('admins.orders.index')->with(['orders' => $orders, 'currentRoute' => $currentRoute]);
+        // echo json_encode($orders);
+    }
+
+    public function showOrder($id) {
+        $order = Order::with(['order_details.product'])->where('id', $id)->first();
+        $currentRoute = Route::currentRouteName();
+
+        if ($order == null) {
+            return abort(404);
+        }
+
+        return view('admins.orders.show')->with(['order' => $order, 'currentRoute' => $currentRoute]);
     }
 }
