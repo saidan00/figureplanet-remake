@@ -6,6 +6,7 @@ use App\Category;
 use App\MediaFile;
 use App\MediaFileUsage;
 use App\Order;
+use App\OrderStatus;
 use Illuminate\Http\Request;
 use App\User;
 use App\Product;
@@ -185,6 +186,30 @@ class AdminController extends Controller
         $orders = Order::with(['user', 'order_status'])->orderBy('created_at', 'desc')->get();
         $currentRoute = Route::currentRouteName();
 
+        foreach ($orders as $item) {
+            $item->statusClassName = '';
+
+            switch ($item->order_status->name) {
+                case 'Canceled':
+                    $item->statusClassName = 'text-danger';
+                    break;
+                case 'Processing':
+                    $item->statusClassName = 'text-warning';
+                    break;
+                case 'Delivering':
+                    $item->statusClassName = 'text-info';
+                    break;
+                case 'Pending':
+                    $item->statusClassName = 'text-muted';
+                    break;
+                case 'Completed':
+                    $item->statusClassName = 'text-success';
+                    break;
+                default:
+                    break;
+            }
+        }
+
         return view('admins.orders.index')->with(['orders' => $orders, 'currentRoute' => $currentRoute]);
         // echo json_encode($orders);
     }
@@ -198,5 +223,23 @@ class AdminController extends Controller
         }
 
         return view('admins.orders.show')->with(['order' => $order, 'currentRoute' => $currentRoute]);
+    }
+
+    public function updateOrderStatus(Request $request, $id) {
+        $order = Order::find($id);
+        $currentRoute = Route::currentRouteName();
+
+        if ($order == null) {
+            return abort(404);
+        }
+
+        $orderStatus = OrderStatus::where('name', $request->input('status'))->first();
+
+        $order->order_status_id = $orderStatus->id;
+        $order->save();
+
+        return back()->with(['order' => $order, 'currentRoute' => $currentRoute]);
+        // echo json_encode($order);
+
     }
 }

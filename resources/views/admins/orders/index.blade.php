@@ -18,6 +18,7 @@
       <tr>
         <th scope="col">Order Code</th>
         <th scope="col">Time</th>
+        <th scope="col">Items</th>
         <th scope="col">Total</th>
         <th scope="col">Email</th>
         <th scope="col">Status</th>
@@ -30,11 +31,12 @@
       <tr>
         <td>{{ $item->id }}</td>
         <td>{{ $item->created_at->format('d/m/Y - H:i') }}</td>
+        <td>{{ $item->items_count }}</td>
         <td>{{ number_format($item->total, 0) }}</td>
         <td>{{ $item->user->email }}</td>
-        <td>{{ $item->order_status->name }}</td>
+        <td class="{{ $item->statusClassName }} font-weight-bold">{{ $item->order_status->name }}</td>
         <td>
-          <a href="/admin/orders/{{ $item->id }}" target="_blank"><i class="fa fa-info-circle fa-lg text-dark"></i></a>
+          <a href="/admin/orders/{{ $item->id }}"><i class="fa fa-info-circle fa-lg text-dark"></i></a>
         </td>
       </tr>
       @endforeach

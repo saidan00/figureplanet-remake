@@ -35,4 +35,8 @@ class Order extends Model
     public function payment_method() {
         return $this->hasOne('App\PaymentMethod', 'id', 'payment_method_id');
     }
+
+    public function getItemsCountAttribute() {
+        return count($this->order_details);
+    }
 }
