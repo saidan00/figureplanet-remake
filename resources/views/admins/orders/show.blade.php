@@ -12,23 +12,23 @@
       <div class="card-body">
         <table class="table">
           <tr>
-            <td>Customer: </td>
+            <th>Customer: </th>
             <td>{{ $order->user->first_name . ' ' . $order->user->last_name}}</td>
           </tr>
           <tr>
-            <td>Email: </td>
+            <th>Email: </th>
             <td>{{ $order->user->email}}</td>
           </tr>
           <tr>
-            <td>Phone: </td>
+            <th>Phone: </th>
             <td>{{ $order->phone }}</td>
           </tr>
           <tr>
-            <td>Address: </td>
+            <th>Address: </th>
             <td>{{ $order->address }}</td>
           </tr>
           <tr>
-            <td>Payment method: </td>
+            <th>Payment method: </th>
             <td>{{ $order->payment_method->name }}</td>
           </tr>
         </table>
@@ -39,19 +39,19 @@
       <div class="card-body">
         <table class="table">
           <tr>
-            <td>Subtotal: </td>
+            <th>Subtotal: </th>
             <td>{{ number_format($order->subtotal, 0) }} VND</td>
           </tr>
           <tr>
-            <td>Shipping fee: </td>
+            <th>Shipping fee: </th>
             <td>{{ number_format($order->shipping_fee, 0) }} VND</td>
           </tr>
           <tr>
-            <td>Total: </td>
+            <th>Total: </th>
             <td>{{ number_format($order->total, 0) }} VND</td>
           </tr>
           <tr>
-            <td>Status: </td>
+            <th>Status: </th>
             <td class="{{ $order->statusClassName }} font-weight-bold">{{ $order->order_status->name }}</td>
           </tr>
           <tr>

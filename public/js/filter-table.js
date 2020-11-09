@@ -117,9 +117,13 @@ $(document).ready(function() {
 
   // users table
   $('#users-table').DataTable({
-    "columnDefs": [{
-      "orderable": false,
-      "targets": -1
+    order: [
+      [6, "asc"],
+      [5, "asc"]
+    ],
+    columnDefs: [{
+      targets: -1,
+      orderable: false
     }]
   });
 });

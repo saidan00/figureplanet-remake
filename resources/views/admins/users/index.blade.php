@@ -18,6 +18,7 @@
         <th scope="col">Last name</th>
         <th scope="col">Gender</th>
         <th scope="col">Phone</th>
+        <th scope="col">Role</th>
         <th scope="col">Status</th>
         <th scope="col"></th>
       </tr>
@@ -28,9 +29,10 @@
         <td>{{ $item->email }}</td>
         <td>{{ $item->first_name }}</td>
         <td>{{ $item->last_name }}</td>
-        <td>{{ $item->gender }}</td>
+        <td>{{ ucwords($item->gender) }}</td>
         <td>{{ $item->phone }}</td>
-        <td>{{ $item->status ? 'Active' : 'Banned' }}</td>
+        <td>{{ ucwords($item->role) }}</td>
+        <td class="font-weight-bold {{ $item->status ? 'text-success' : 'text-danger' }}">{{ $item->status ? 'Active' : 'Banned' }}</td>
         <td>
           <a href="/admin/users/edit/{{ $item->id }}" title="Edit user"><i class="fa fa-edit fa-lg text-dark"></i></a>
         </td>

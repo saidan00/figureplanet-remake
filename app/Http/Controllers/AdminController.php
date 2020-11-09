@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Product;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
@@ -154,7 +155,7 @@ class AdminController extends Controller
             $product->save();
         }
 
-        return back()->with(['flash' => 'Product ' . $product->sku . ' is updated.']);
+        return back();
     }
 
     /**
@@ -285,7 +286,7 @@ class AdminController extends Controller
                 break;
         }
 
-        return back()->with(['order' => $order, 'currentRoute' => $currentRoute]);
+        return back();
         // echo json_encode($order);
 
     }
@@ -294,7 +295,38 @@ class AdminController extends Controller
         $users = User::all();
         $currentRoute = Route::currentRouteName();
 
+        foreach($users as $user) {
+            $user->role = $user->getRoleNames()->first();
+        }
+
         return view('admins.users.index')->with(['users' => $users, 'currentRoute' => $currentRoute]);
-        // echo json_encode($orders);
+        // echo json_encode($users);
+    }
+
+    public function editUser($id) {
+        $user = User::find($id);
+        $user->role = $user->getRoleNames()->first();
+        $roles = Role::all();
+        $currentRoute = Route::currentRouteName();
+
+        return view('admins.users.edit')->with(['user' => $user, 'roles' => $roles, 'currentRoute' => $currentRoute]);
+    }
+
+    public function updateUser(Request $request, $id) {
+        $user = User::find($id);
+        $roles = Role::all();
+        $currentRoute = Route::currentRouteName();
+
+        if ($user->getRoleNames()->first() != $request->input('role')) {
+            $user->syncRoles([$request->input('role')]);
+        }
+
+        if ($user->status != $request->input('status')) {
+            $user->status =  $request->input('status');
+        }
+
+        $user->save();
+
+        return back()->with(['flash' => 'User is updated.']);
     }
 }
