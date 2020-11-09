@@ -3,7 +3,7 @@ $(document).ready(function() {
     e.preventDefault();
     swal({
         title: "Checkout",
-        text: "Are you want to check out?",
+        text: "Do you want to check out?",
         icon: "info",
         buttons: true,
       })
@@ -18,7 +18,7 @@ $(document).ready(function() {
     e.preventDefault();
     swal({
         title: "Cancel",
-        text: "Are you want to cancel?",
+        text: "Do you want to cancel?",
         icon: "warning",
         buttons: true,
       })

@@ -52,33 +52,34 @@
           </tr>
           <tr>
             <td>Status: </td>
-            <td>{{ $order->order_status->name }}</td>
+            <td class="{{ $order->statusClassName }} font-weight-bold">{{ $order->order_status->name }}</td>
           </tr>
           <tr>
             @if ($order->order_status->name != 'Canceled')
             <td>
-              <form action="/admin/orders/updateorderstatus/{{ $order->id }}" method="POST">
+              <form action="/admin/orders/updateorderstatus/{{ $order->id }}" method="POST" id='cancel-form'>
                 @csrf
                 <input type="hidden" name="status" value="Canceled">
+                <input type="hidden" name="note" value="" id='cancel-note'>
                 <input type="submit" value="Cancel" class="btn btn-danger" id="btn-cancel">
               </form>
             </td>
 
             <td>
-              <form action="/admin/orders/updateorderstatus/{{ $order->id }}" method="POST">
+              <form action="/admin/orders/updateorderstatus/{{ $order->id }}" method="POST" id="process-form">
                 @csrf
                 @switch($order->order_status->name)
                 @case('Pending')
                 <input type="hidden" name="status" value="Processing">
-                <input type="submit" value="Process" class="btn btn-primary">
+                <input type="submit" value="Process" class="btn btn-primary" id="btn-process">
                 @break
                 @case('Processing')
                 <input type="hidden" name="status" value="Delivering">
-                <input type="submit" value="Deliver" class="btn btn-info">
+                <input type="submit" value="Deliver" class="btn btn-info" id="btn-deliver">
                 @break
                 @case('Delivering')
                 <input type="hidden" name="status" value="Completed">
-                <input type="submit" value="Complete" class="btn btn-success">
+                <input type="submit" value="Complete" class="btn btn-success" id="btn-complete">
                 @break
                 @default
                 @endswitch
@@ -86,10 +87,11 @@
             </td>
             @else
             <td>
-              <form action="/admin/orders/updateorderstatus/{{ $order->id }}" method="POST">
+              <form action="/admin/orders/updateorderstatus/{{ $order->id }}" method="POST" id="reopen-form">
                 @csrf
                 <input type="hidden" name="status" value="Processing">
-                <input type="submit" value="Re-open" class="btn btn-secondary">
+                <input type="hidden" name="note" value="">
+                <input type="submit" value="Re-open" class="btn btn-secondary" id="btn-reopen">
               </form>
             </td>
             <td></td>
@@ -97,6 +99,15 @@
           @endif
 
         </table>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="card-body">
+        @if ($order->note != null)
+        <h6>Note</h6>
+        <p> {{ $order->note }}</p>
+        @endif
       </div>
     </div>
   </div>
@@ -128,4 +139,6 @@
     </div>
   </div>
 </div>
+
+<script src="{{ asset('js/admin-buttons.js') }}"></script>
 @endsection

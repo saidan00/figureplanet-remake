@@ -222,6 +222,27 @@ class AdminController extends Controller
             return abort(404);
         }
 
+        $order->statusClassname = '';
+        switch ($order->order_status->name) {
+            case 'Canceled':
+                $order->statusClassName = 'text-danger';
+                break;
+            case 'Processing':
+                $order->statusClassName = 'text-warning';
+                break;
+            case 'Delivering':
+                $order->statusClassName = 'text-info';
+                break;
+            case 'Pending':
+                $order->statusClassName = 'text-muted';
+                break;
+            case 'Completed':
+                $order->statusClassName = 'text-success';
+                break;
+            default:
+                break;
+        }
+
         return view('admins.orders.show')->with(['order' => $order, 'currentRoute' => $currentRoute]);
     }
 
@@ -236,7 +257,33 @@ class AdminController extends Controller
         $orderStatus = OrderStatus::where('name', $request->input('status'))->first();
 
         $order->order_status_id = $orderStatus->id;
+
+        if ($request->has('note')) {
+            $order->note = $request->input('note');
+        }
+
         $order->save();
+
+        $order->statusClassname = '';
+        switch ($order->order_status->name) {
+            case 'Canceled':
+                $order->statusClassName = 'text-danger';
+                break;
+            case 'Processing':
+                $order->statusClassName = 'text-warning';
+                break;
+            case 'Delivering':
+                $order->statusClassName = 'text-info';
+                break;
+            case 'Pending':
+                $order->statusClassName = 'text-muted';
+                break;
+            case 'Completed':
+                $order->statusClassName = 'text-success';
+                break;
+            default:
+                break;
+        }
 
         return back()->with(['order' => $order, 'currentRoute' => $currentRoute]);
         // echo json_encode($order);
