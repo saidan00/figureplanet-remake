@@ -289,4 +289,12 @@ class AdminController extends Controller
         // echo json_encode($order);
 
     }
+
+    public function getUsers() {
+        $users = User::all();
+        $currentRoute = Route::currentRouteName();
+
+        return view('admins.users.index')->with(['users' => $users, 'currentRoute' => $currentRoute]);
+        // echo json_encode($orders);
+    }
 }

@@ -5,7 +5,11 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 mx-auto">
+
       <div class="card card-body mt-5 mb-5">
+        @if (Session::has('flash'))
+        <div class="alert alert-danger">{{ Session::get('flash') }}</div>
+        @endif
         <h2>Login</h2>
         <hr>
         <form action="{{ route('login') }}" method="POST">
@@ -26,7 +30,8 @@
             <label for="password">Password <span class="text-danger font-weight-bold">*</span></label>
             <div class="bo4">
               <input type="password" name="password"
-                class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
+                class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('password') is-invalid @enderror"
+                name="password" required autocomplete="current-password" placeholder="Password">
             </div>
             @error('password')
             <span class="text-danger small">{{ $message }}</span>
