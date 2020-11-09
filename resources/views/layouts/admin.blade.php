@@ -9,6 +9,9 @@
   <meta name="generator" content="Jekyll v4.1.1">
   <title>{{ Config::get('app.name') }} - Dashboard</title>
 
+  <!-- logo -->
+  <link rel="icon" type="image/ico" href="{{ asset('/storage/media/logo.png') }}">
+
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
 

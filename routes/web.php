@@ -69,6 +69,7 @@ Route::prefix('admin')->middleware(['role:admin'])->group(function() {
     Route::get('users', 'AdminController@getUsers')->name('admin.users.index');
     Route::get('users/edit/{id}', 'AdminController@editUser')->name('admin.users.edit');
     Route::post('users/update/{id}', 'AdminController@updateUser')->name('admin.users.update');
+    Route::get('users/add', 'AdminController@addUser')->name('admin.users.add');
 });
 
 Auth::routes();

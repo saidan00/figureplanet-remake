@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h1 class="h2">Edit product</h1>
-  <a class="font-weight-bold" href="/admin/products/">&lt;&lt;Back</a>
+  <a class="font-weight-bold" href="/admin/products/">&lt;&lt;Back to Products</a>
 </div>
 
 <div class="card">

@@ -30,7 +30,7 @@
                   class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('last_name') is-invalid @enderror"
                   value="{{ old('last_name') }}" placeholder="Last name">
               </div>
-              @error('email')
+              @error('last_name')
               <span class="text-danger small">{{ $message }}</span>
               @enderror
             </div>
@@ -43,7 +43,7 @@
                 class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg @error('email') is-invalid @enderror"
                 value="{{ old('email') }}" placeholder="Email">
             </div>
-            @error('last_name')
+            @error('email')
             <span class="text-danger small">{{ $message }}</span>
             @enderror
           </div>

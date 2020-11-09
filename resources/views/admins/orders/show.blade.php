@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h1 class="h2">Orders {{ $order->id }}</h1>
-  <a class="font-weight-bold" href="/admin/orders/">&lt;&lt;Back</a>
+  <a class="font-weight-bold" href="/admin/orders/">&lt;&lt;Back to Orders</a>
 </div>
 
 <div class="card">
@@ -127,7 +127,7 @@
           <tbody>
             @foreach ($order->order_details as $item)
             <tr>
-              <td>{{ $item->product->name }}</td>
+              <td><a href="/admin/products/edit/{{ $item->product->sku }}" target="_blank">{{ $item->product->name }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
               <td>{{ number_format($item->price,0) }}</td>
               <td>{{ $item->quantity }}</td>
               <td>{{ number_format($item->total,0) }}</td>

@@ -329,4 +329,11 @@ class AdminController extends Controller
 
         return back()->with(['flash' => 'User is updated.']);
     }
+
+    public function addUser() {
+        $roles = Role::all();
+        $currentRoute = Route::currentRouteName();
+
+        return view('admins.users.create')->with(['roles' => $roles, 'currentRoute' => $currentRoute]);
+    }
 }
