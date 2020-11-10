@@ -35,10 +35,10 @@ class ProductsController extends Controller
 
         // filter by name
         if ($request->has('name')) {
-            if ($request->input('name') != 'none') {
+            if ($request->input('name') != '') {
                 $products = $products
                     ->where('name', 'LIKE', '%' . $request->input('name') . '%')
-                    ->orWhere('sku', $request->input('name'));
+                    ->orWhere('sku', 'LIKE', $request->input('name'));
             }
         }
 
