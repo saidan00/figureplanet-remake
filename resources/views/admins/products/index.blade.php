@@ -21,10 +21,12 @@
       <tr>
         <th scope="col">SKU</th>
         <th scope="col">Name</th>
-        <th scope="col">Quantity</th>
+        <th scope="col">Stock</th>
+        <th scope="col">Ordered</th>
+        <th scope="col">Available</th>
         <th scope="col">Price</th>
         <th scope="col">Category</th>
-        <th scope="col">Available</th>
+        <th scope="col">Visible</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -33,9 +35,10 @@
       <tr>
         <td>{{ $item->sku }}</td>
         <td>{{ $item->name }}</td>
+        <td>{{ $item->quantity }}</td>
+        <td>{{ $item->ordered_quantity }}</td>
         <td>{{ $item->available_quantity }}</td>
         <td>{{ number_format($item->price, 0) }}</td>
-        {{-- <td>{{ $item->price }}</td> --}}
         <td>{{ $item->category->name }}</td>
         <td>{{ $item->is_available ? 'Yes' : 'No' }}</td>
         <td>

@@ -56,6 +56,8 @@ Route::prefix('admin')->middleware(['role:admin'])->group(function() {
         echo 'Hello Admin';
     });
 
+    Route::get('instant', 'AdminController@instant');
+
     Route::get('products', 'AdminController@getProducts')->name('admin.products.index');
     Route::get('products/add', 'AdminController@addProduct')->name('admin.products.add');
     Route::get('products/edit/{sku}', 'AdminController@editProduct')->name('admin.products.edit');

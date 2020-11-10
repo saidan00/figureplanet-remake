@@ -31,10 +31,10 @@
           </select>
         </div>
         <div class="form-group col-sm-3">
-          <label class="col-form-label">Available <span class="text-danger small font-weight-bold">*</span></label>
+          <label class="col-form-label">Visible <span class="text-danger small font-weight-bold">*</span></label>
           <select class="custom-select" name="available">
-            <option value="1" {{ $product->is_available ? 'selected' : '' }}>Available</option>
-            <option value="0" {{ !$product->is_available ? 'selected' : '' }}>Unavailable</option>
+            <option value="1" {{ $product->is_available ? 'selected' : '' }}>Visible</option>
+            <option value="0" {{ !$product->is_available ? 'selected' : '' }}>Hidden</option>
           </select>
         </div>
       </div>
@@ -61,6 +61,35 @@
           @error('price')
           <span class="text-danger small">{{ $message }}</span>
           @enderror
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-sm-3">
+          <label for="quantity">Quantity: <span class="text-danger small font-weight-bold">*</span></label>
+          <div class="text-danger small font-weight-bold">
+            <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror"
+              value="{{ $product->quantity }}" placeholder="Quantity">
+          </div>
+          @error('quantity')
+          <span class="text-danger small">{{ $message }}</span>
+          @enderror
+        </div>
+
+        <div class="form-group col-sm-3">
+          <label for="ordered-quantity">Ordered:</label>
+          <div class="text-danger small font-weight-bold">
+            <input type="number" name="ordered-quantity" class="form-control"
+              value="{{ $product->ordered_quantity }}" readonly>
+          </div>
+        </div>
+
+        <div class="form-group col-sm-3">
+          <label for="available-quantity">Available:</label>
+          <div class="text-danger small font-weight-bold">
+            <input type="number" name="available-quantity" class="form-control"
+              value="{{ $product->available_quantity }}" readonly>
+          </div>
         </div>
       </div>
 

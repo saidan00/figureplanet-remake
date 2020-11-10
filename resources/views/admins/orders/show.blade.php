@@ -108,6 +108,8 @@
         <h6>Note</h6>
         <p> {{ $order->note }}</p>
         @endif
+
+        @include('inc.flash')
       </div>
     </div>
   </div>
@@ -118,6 +120,7 @@
         <table class="table table-bordered">
           <thead class="text-uppercase">
             <tr>
+              <th scope="col">SKU</th>
               <th scope="col">Product</th>
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
@@ -127,7 +130,8 @@
           <tbody>
             @foreach ($order->order_details as $item)
             <tr>
-              <td><a href="/admin/products/edit/{{ $item->product->sku }}" target="_blank">{{ $item->product->name }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
+              <td><a href="/admin/products/edit/{{ $item->product->sku }}" target="_blank">{{ $item->product->sku }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
+              <td>{{ $item->product->name }}</td>
               <td>{{ number_format($item->price,0) }}</td>
               <td>{{ $item->quantity }}</td>
               <td>{{ number_format($item->total,0) }}</td>

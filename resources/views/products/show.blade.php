@@ -63,6 +63,7 @@
       </div>
 
       <!--  -->
+      @if ($product->quantity != 0)
       <div class="add-product p-t-33 p-b-60">
         <div class="flex-r-m flex-w p-t-10">
           <div class="w-size16 flex-m flex-w">
@@ -88,10 +89,13 @@
           </div>
         </div>
       </div>
+      @endif
 
       <div class="p-b-45">
         <span class="s-text8 m-r-35">SKU: {{ $product->sku }}</span>
         <span class="s-text8">Categories: {{ $product->category->name }}</span>
+        @if ($product->quantity <= 5 ) <span class="s-text8">Quantity: {{ $product->quantity }}</span>
+          @endif
       </div>
 
     </div>

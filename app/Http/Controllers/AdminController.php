@@ -9,13 +9,22 @@ use App\Category;
 use App\MediaFile;
 use App\OrderStatus;
 use App\MediaFileUsage;
+use Facade\FlareClient\Flare;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Faker\Generator as Faker;
 use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
+    /**
+     * For instant run only
+     */
+    public function instant(Faker $faker)
+    {
+    }
+
     /**
      * Redirect user based on role.
      */
@@ -131,22 +140,26 @@ class AdminController extends Controller
      */
     public function updateProduct(Request $request, $id)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'price' => ['required', 'numeric', 'min:1000', 'max:999999999'],
-            'image' => ['image', 'max:5120']
-        ]);
-
         $product = Product::find($id);
 
         // if product found
         if ($product != null) {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'description' => ['required', 'string'],
+                'price' => ['required', 'numeric', 'min:1000', 'max:999999999'],
+                'quantity' => ['required', 'numeric', 'min:' . $product->ordered_quantity, 'max:9999'],
+                'image' => ['image', 'max:5120']
+            ]);
+
             $product->name = $request->input('name');
             $product->description = $request->input('description');
             $product->price = $request->input("price");
+            $product->quantity = $request->input("quantity");
             $product->category_id = $request->input('category');
             $product->is_available = $request->input('available');
+
+            $product->available_quantity = $product->quantity - $product->ordered_quantity;
 
             if ($request->hasFile('image')) {
                 // chưa viết xong, chưa tối ưu nếu up file extension khác
@@ -253,10 +266,21 @@ class AdminController extends Controller
     public function updateOrderStatus(Request $request, $id)
     {
         $order = Order::find($id);
-        $currentRoute = Route::currentRouteName();
 
         if ($order == null) {
             return abort(404);
+        }
+
+        // is reopen
+        $isReopen = false;
+        if ($order->order_status->name == 'Canceled' && $request->input('status') == 'Processing') {
+            $isReopen = true;
+        }
+
+        // is cancel after completed - hủy sau khi hoàn thành đơn
+        $isCancelCompleted = false;
+        if ($order->order_status->name == 'Completed' && $request->input('status') == 'Canceled') {
+            $isCancelCompleted = true;
         }
 
         $orderStatus = OrderStatus::where('name', $request->input('status'))->first();
@@ -267,30 +291,42 @@ class AdminController extends Controller
             $order->note = $request->input('note');
         }
 
-        $order->save();
+        // update product quantity
+        $flashMessage = "These products are not enough: ";
+        $isReopenOk = true;
+        foreach ($order->order_details as $detail) {
+            if ($orderStatus->name == 'Completed') {
+                $detail->product->ordered_quantity -= $detail->quantity;
+                $detail->product->quantity -= $detail->quantity;
+            } else if ($isCancelCompleted) {
+                $detail->product->quantity += $detail->quantity;
+            } else if ($orderStatus->name == 'Canceled') {
+                $detail->product->ordered_quantity -= $detail->quantity;
+            } else if ($isReopen) {
+                // xử lý nếu không đủ số lượng để reopen
+                if ($detail->product->quantity < $detail->quantity) {
+                    $flashMessage .= $detail->product->sku . ", ";
+                    $isReopenOk = false;
+                } else {
+                    $detail->product->ordered_quantity += $detail->quantity;
+                }
+            }
 
-        $order->statusClassname = '';
-        switch ($order->order_status->name) {
-            case 'Canceled':
-                $order->statusClassName = 'text-danger';
-                break;
-            case 'Processing':
-                $order->statusClassName = 'text-warning';
-                break;
-            case 'Delivering':
-                $order->statusClassName = 'text-info';
-                break;
-            case 'Pending':
-                $order->statusClassName = 'text-muted';
-                break;
-            case 'Completed':
-                $order->statusClassName = 'text-success';
-                break;
-            default:
-                break;
+            $detail->product->available_quantity = $detail->product->quantity - $detail->product->ordered_quantity;
         }
 
-        return back();
+        if ($isReopenOk) {
+            foreach ($order->order_details as $detail) {
+                $detail->product->save();
+            }
+
+            $order->save();
+            return back();
+        } else {
+            $flashClassName = 'alert-danger';
+            return back()->with(['flash' => $flashMessage, 'classname' => $flashClassName]);
+        }
+
         // echo json_encode($order);
 
     }

@@ -7,10 +7,10 @@
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
   <meta name="generator" content="Jekyll v4.1.1">
-  <title>{{ Config::get('app.name') }} - Dashboard</title>
+  <title>{{ Config::get('app.name') }}: {{ ucfirst(Auth::user()->roles[0]->name) }}</title>
 
   <!-- logo -->
-  <link rel="icon" type="image/ico" href="{{ asset('/storage/media/logo.png') }}">
+  <link rel="icon" type="image/ico" href="{{ asset('/storage/media/admin-logo.png') }}">
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">

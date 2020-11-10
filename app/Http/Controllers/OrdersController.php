@@ -11,6 +11,7 @@ use App\OrderDetail;
 use App\Cart;
 use App\OrderStatus;
 use App\PaymentMethod;
+use App\Product;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Route;
@@ -125,6 +126,13 @@ class OrdersController extends Controller
 
             $order_detail->save();
 
+            // update product quantity
+            $product = Product::find($item->product_id);
+            $product->ordered_quantity += $item->quantity;
+            $product->available_quantity = $product->quantity - $product->ordered_quantity;
+            $product->save();
+
+            // remove item from cart
             $item->delete();
         }
 
@@ -143,6 +151,13 @@ class OrdersController extends Controller
         $orderStatus = OrderStatus::where('name', 'Canceled')->first();
 
         $order->order_status_id = $orderStatus->id;
+        $order->note = $request->input('note');
+
+        foreach ($order->order_details as $detail) {
+            $detail->product->ordered_quantity -= $detail->quantity;
+            $detail->product->available_quantity = $detail->product->quantity - $detail->product->ordered_quantity;
+            $detail->product->save();
+        }
 
         $order->save();
 
