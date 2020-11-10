@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Order;
+use App\Product;
 use App\Category;
 use App\MediaFile;
-use App\MediaFileUsage;
-use App\Order;
 use App\OrderStatus;
+use App\MediaFileUsage;
 use Illuminate\Http\Request;
-use App\User;
-use App\Product;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 
@@ -22,11 +23,11 @@ class AdminController extends Controller
     {
         $user = User::find(auth()->user()->id);
         if ($user->hasRole('admin')) {
-            redirect("admins/users");
+            return redirect("admins/users");
         } else if ($user->hasRole('manager')) {
-            redirect("admins/products");
+            return redirect("admins/products");
         } else {
-            redirect("admins/products");
+            return abort(403);
         }
     }
 
@@ -183,7 +184,8 @@ class AdminController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function getOrders() {
+    public function getOrders()
+    {
         $orders = Order::with(['user', 'order_status'])->orderBy('created_at', 'desc')->get();
         $currentRoute = Route::currentRouteName();
 
@@ -215,7 +217,8 @@ class AdminController extends Controller
         // echo json_encode($orders);
     }
 
-    public function showOrder($id) {
+    public function showOrder($id)
+    {
         $order = Order::with(['order_details.product'])->where('id', $id)->first();
         $currentRoute = Route::currentRouteName();
 
@@ -247,7 +250,8 @@ class AdminController extends Controller
         return view('admins.orders.show')->with(['order' => $order, 'currentRoute' => $currentRoute]);
     }
 
-    public function updateOrderStatus(Request $request, $id) {
+    public function updateOrderStatus(Request $request, $id)
+    {
         $order = Order::find($id);
         $currentRoute = Route::currentRouteName();
 
@@ -291,11 +295,12 @@ class AdminController extends Controller
 
     }
 
-    public function getUsers() {
+    public function getUsers()
+    {
         $users = User::all();
         $currentRoute = Route::currentRouteName();
 
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $user->role = $user->getRoleNames()->first();
         }
 
@@ -303,7 +308,8 @@ class AdminController extends Controller
         // echo json_encode($users);
     }
 
-    public function editUser($id) {
+    public function editUser($id)
+    {
         $user = User::find($id);
         $user->role = $user->getRoleNames()->first();
         $roles = Role::all();
@@ -312,7 +318,8 @@ class AdminController extends Controller
         return view('admins.users.edit')->with(['user' => $user, 'roles' => $roles, 'currentRoute' => $currentRoute]);
     }
 
-    public function updateUser(Request $request, $id) {
+    public function updateUser(Request $request, $id)
+    {
         $user = User::find($id);
         $roles = Role::all();
         $currentRoute = Route::currentRouteName();
@@ -330,10 +337,39 @@ class AdminController extends Controller
         return back()->with(['flash' => 'User is updated.']);
     }
 
-    public function addUser() {
+    public function addUser()
+    {
         $roles = Role::all();
         $currentRoute = Route::currentRouteName();
 
         return view('admins.users.create')->with(['roles' => $roles, 'currentRoute' => $currentRoute]);
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'gender' => ['required', 'in:male,female'],
+            'phone' => ['required', 'regex:/^0[1-9][0-9]{8}$/'],
+            'address' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'in:admin,manager,customer'],
+        ]);
+
+        $user = User::create([
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'gender' => $request->input('gender'),
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address'),
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        $user->assignRole($request->input('role'));
+
+        return back()->with(['flash' => 'User ' . $user->email . ' created.']);
     }
 }

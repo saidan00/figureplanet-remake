@@ -1,3 +1,30 @@
 {
-    "blade.format.enable": true
+  "php.suggest.basic": false,
+  "php.validate.executablePath": "C:\\xampp\\php\\php.exe",
+  "oneDarkPro.editorTheme": "onedarkPro",
+  "workbench.colorTheme": "Atom One Dark",
+  "workbench.iconTheme": "file-icons",
+  "editor.fontLigatures": true,
+  "editor.fontFamily": "'Consolas ligaturized v2', Consolas, 'Courier New', monospace",
+  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "[javascript]": {
+      "editor.defaultFormatter": "lonefy.vscode-JS-CSS-HTML-formatter"
+  },
+  "vsicons.dontShowNewVersionMessage": true,
+  "blade.format.enable": true,
+  "editor.rulers": [ 120 ],
+  "[php]": {
+      "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+      "editor.rulers": [ 120 ]
+  },
+  "window.zoomLevel": 0,
+  "[html]": {
+      "editor.defaultFormatter": "lonefy.vscode-JS-CSS-HTML-formatter"
+  },
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 120,
+  "phpSortImports.sorting": "alphabetically",
+  "phpSortImports.languages": [
+      "php"
+  ]
 }

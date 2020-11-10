@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +70,7 @@ Route::prefix('admin')->middleware(['role:admin'])->group(function() {
     Route::get('users/edit/{id}', 'AdminController@editUser')->name('admin.users.edit');
     Route::post('users/update/{id}', 'AdminController@updateUser')->name('admin.users.update');
     Route::get('users/add', 'AdminController@addUser')->name('admin.users.add');
+    Route::post('users/store', 'AdminController@storeUser')->name('admin.users.store');
 });
 
 Auth::routes();

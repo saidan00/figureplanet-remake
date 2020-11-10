@@ -8,7 +8,10 @@
 
 <div class="card">
   <div class="card-body mx-auto">
-    <form action="{{ route('register') }}" method="POST">
+
+    @include('inc.flash')
+
+    <form action="/admin/users/store" method="POST">
       @csrf
 
       <div class="row">
@@ -31,7 +34,7 @@
               class="sizefull s-text7 p-l-22 p-r-22 form-control @error('last_name') is-invalid @enderror"
               value="{{ old('last_name') }}" placeholder="Last name">
           </div>
-          @error('email')
+          @error('last_name')
           <span class="text-danger small">{{ $message }}</span>
           @enderror
         </div>
@@ -55,7 +58,7 @@
             class="sizefull s-text7 p-l-22 p-r-22 form-control @error('email') is-invalid @enderror"
             value="{{ old('email') }}" placeholder="Email">
         </div>
-        @error('last_name')
+        @error('email')
         <span class="text-danger small">{{ $message }}</span>
         @enderror
       </div>
@@ -77,7 +80,7 @@
             class="text-danger small font-weight-bold">*</span></label>
         <div class="bo4">
           <input type="password" name="password_confirmation"
-            class="sizefull s-text7 p-l-22 p-r-22 form-control form-control-lg" value=""
+            class="sizefull s-text7 p-l-22 p-r-22 form-control" value=""
             placeholder="Repeat your password">
         </div>
       </div>
