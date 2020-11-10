@@ -32,6 +32,9 @@
 
 <section id="cart-logged-in" class="cart bgwhite p-t-70 p-b-100">
   <div class="container">
+
+    @include('inc.flash')
+
     <!-- Cart item -->
     <div class="container-table-cart pos-relative">
       <div class="wrap-table-shopping-cart bgwhite">
@@ -63,8 +66,8 @@
                     <i class="fs-12 fa fa-minus" aria-hidden="true"></i>
                   </button>
 
-                  <input class="size8 m-text18 t-center num-product" type="number" name="num-product1"
-                    value="{{ $item->quantity }}">
+                  <input id="num-product-{{ $item->product->id }}" class="size8 m-text18 t-center num-product"
+                    type="number" name="num-product1" value="{{ $item->quantity }}">
 
                   <button class="btn-num-product-up color1 flex-c-m size7 bg8 eff2">
                     <i class="fs-12 fa fa-plus" aria-hidden="true"></i>

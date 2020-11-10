@@ -16,7 +16,7 @@ class CheckBanned
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->check() && !auth()->user()->status) {
+        if (auth()->check() && auth()->user()->status == 0) {
             Auth::logout();
 
             return redirect()->route('login')->with(['flash' => 'Your account has been suspended. Please contact administrator.']);

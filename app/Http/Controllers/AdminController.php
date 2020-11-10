@@ -324,6 +324,7 @@ class AdminController extends Controller
             return back();
         } else {
             $flashClassName = 'alert-danger';
+            $flashMessage = substr($flashMessage, 0, -1);
             return back()->with(['flash' => $flashMessage, 'classname' => $flashClassName]);
         }
 

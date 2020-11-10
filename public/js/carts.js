@@ -91,11 +91,19 @@ $(document).ready(function() {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(response) {
-        // load total carts (main.js)
-        loadTotalCart();
+        // response = JSON.parse(response);
+        if (typeof response.error_message !== 'undefined') {
+          // Alert using sweetalert
+          swal(productName, "is not enough !", "error");
+        } else {
+          // load total carts (main.js)
+          loadTotalCart();
 
-        // Alert using sweetalert
-        swal(productName, "is added to cart !", "success");
+          // Alert using sweetalert
+          swal(productName, "is added to cart !", "success");
+        }
+
+
       },
     });
   }
@@ -119,12 +127,17 @@ $(document).ready(function() {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(response) {
-        // console.log(response);
         let item = response.cart_items.filter(i => i.product.id == productId)[0];
 
-        $(row).find('.column-5')[0].innerHTML = item.total;
+        // console.log(response);
+        if (response.error_message != '') {
+          swal('', response.error_message, "error");
+          $('#num-product-' + productId).val(item.quantity);
+        } else {
+          $(row).find('.column-5')[0].innerHTML = item.total;
 
-        loadCart(response);
+          loadCart(response);
+        }
       },
     });
   }

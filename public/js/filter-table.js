@@ -24,6 +24,7 @@ $(document).ready(function() {
       }
     );
   } else if ($('#orders-table').length) {
+    $.fn.dataTable.moment('dd/MM/YYYY - HH:mm');
     $.fn.dataTable.ext.search.push(
       function(settings, data, dataIndex) {
         let fromDate = $('#from-date').val();
@@ -96,7 +97,7 @@ $(document).ready(function() {
   // orders table
   let ordersTable = $('#orders-table').DataTable({
     order: [
-      [1, "desc"]
+      [1, "asc"]
     ],
     columnDefs: [{
       "orderable": false,

@@ -7,6 +7,7 @@ use App\Cart;
 use App\CartItem;
 use App\Http\Resources\Cart as CartResource;
 use App\Http\Resources\CartItem as CartItemResource;
+use App\Product;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use stdClass;
@@ -31,8 +32,23 @@ class CartsController extends Controller
     public function processCheckout()
     {
         $cart = $this->getCart();
+        $isEnough = true;
+        $flashMessage = 'These products is not enough: ';
 
-        return view('carts.checkout')->with(['cart' => $cart]);
+        foreach ($cart->cart_items as $item) {
+            if ($item->quantity > $item->product->available_quantity) {
+                $isEnough = false;
+                $flashMessage .= $item->product->name . ', ';
+            }
+        }
+
+        if ($isEnough) {
+            return view('carts.checkout')->with(['cart' => $cart]);
+        } else {
+            $flashMessage = substr($flashMessage, 0, -2);
+            return redirect('/cart')->with(['flash' => $flashMessage, 'classname' => 'alert-danger']);
+        }
+
         // echo json_encode($cart);
     }
 
@@ -77,8 +93,29 @@ class CartsController extends Controller
             $cart->save();
         }
 
-        // INSERT ON DUPLICATE KEY UPDATE
-        DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity, created_at, updated_at) VALUES(?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity',  [$cart->id, $productId, $quantity]);
+        $product = Product::find($productId);
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $isEnough = true;
+
+        // kiểm tra có còn đủ hàng không
+        if ($cartItem == null) {
+            if ($quantity > $product->available_quantity) {
+                $cart->error_message = 'Product ' . $product->name . ' is not enough';
+                $isEnough = false;
+            }
+        } else {
+            if (($quantity + $cartItem->quantity) > $product->available_quantity) {
+                $cart->error_message = 'Product ' . $product->name . ' is not enough!';
+                $isEnough = false;
+            }
+        }
+
+        // nếu còn đủ thì thêm vào giỏ
+        if ($isEnough) {
+            // INSERT ON DUPLICATE KEY UPDATE
+            DB::statement('INSERT INTO cart_items(cart_id, product_id, quantity, created_at, updated_at) VALUES(?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity) + quantity',  [$cart->id, $productId, $quantity]);
+        }
+
         return json_encode($cart);
     }
 
@@ -99,8 +136,13 @@ class CartsController extends Controller
             ->where('product_id', $productId)
             ->first();
 
-        $item->quantity = $quantity;
-        $item->save();
+        if ($quantity > $item->product->available_quantity) {
+            $cart->error_message = 'Product ' . $item->product->name . ' is not enough';
+        } else {
+            $cart->error_message = '';
+            $item->quantity = $quantity;
+            $item->save();
+        }
 
         return new CartResource($cart);
         // return json_encode($item);

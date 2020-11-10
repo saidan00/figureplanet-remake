@@ -20,7 +20,8 @@ class Cart extends JsonResource
             'subtotal' => number_format($this->subtotal, 0),
             'shipping_fee' => number_format($this->shipping_fee, 0),
             'total' => number_format($this->total, 0),
-            'cart_items' => CartItemResource::collection($this->cart_items)
+            'cart_items' => CartItemResource::collection($this->cart_items),
+            'error_message' => $this->error_message
         ];
     }
 }

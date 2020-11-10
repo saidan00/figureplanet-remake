@@ -24,7 +24,6 @@
   <link rel="stylesheet" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
 
   <script type="text/javascript" src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
-
   <script type="text/javascript" src="{{ asset('vendor/sweetalert/sweetalert.min.js') }}"></script>
   <style>
     .bd-placeholder-img {
@@ -79,7 +78,9 @@
     </div>
   </div>
 
+  <script type="text/javascript" src="{{ asset('js/moment.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('vendor/datatables/datatables.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/datetime-moment.js') }}"></script>
 </body>
 
 </html>
