@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Product;
 
 class PagesController extends Controller
 {
     public function index() {
-        return view('pages.index');
+        $products = Product::where('is_available', true)->take(8)->get();
+        return view('pages.index')->with(['products' => $products]);
     }
 
     public function about() {

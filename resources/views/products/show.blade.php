@@ -94,7 +94,8 @@
       <div class="p-b-45">
         <span class="s-text8 m-r-35">SKU: {{ $product->sku }}</span>
         <span class="s-text8 m-r-35">Categories: {{ $product->category->name }}</span>
-        @if ($product->quantity <= 5 ) <span class="s-text8">Quantity: {{ $product->quantity }}</span>
+        @if ($product->available_quantity <= 5 ) <span class="s-text8">Quantity:
+          {{ $product->available_quantity }}</span>
           @endif
       </div>
 

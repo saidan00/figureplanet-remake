@@ -28,7 +28,6 @@
   </p>
 </section>
 @else
-@endauth
 
 <section id="cart-logged-in" class="cart bgwhite p-t-70 p-b-100">
   <div class="container">
@@ -136,4 +135,5 @@
   </div>
 </section>
 @endif
+@endauth
 @endsection

@@ -2,7 +2,8 @@
 
 @section('content')
 <!-- Title Page -->
-<section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url({{ asset('/storage/media/heading-pages-02.jpg') }});">
+<section class="bg-title-page p-t-50 p-b-40 flex-col-c-m"
+  style="background-image: url({{ asset('/storage/media/heading-pages-02.jpg') }});">
   <h2 class="l-text2 t-center">{{ config('app.name', 'Laravel') }}</h2>
   <p class="m-text13 t-center">New Arrivals Figure {{ date("Y") }}</p>
 </section>
@@ -20,7 +21,8 @@
 
           <ul class="p-b-54">
             <li class="p-t-4">
-              <a data-category="All" href="/products" class="s-text13 {{ !app('request')->input('category') || app('request')->input('category') == 'All' ? 'active1' : '' }}">
+              <a data-category="All" href="/products"
+                class="s-text13 {{ !app('request')->input('category') || app('request')->input('category') == 'All' ? 'active1' : '' }}">
                 All
               </a>
             </li>
@@ -28,7 +30,8 @@
             @foreach($categories as $category)
             @if ($category->name != 'Others')
             <li class="p-t-4">
-            <a data-category="{{ $category->name }}" href="{{ '/products?category=' . $category->name }}" class="s-text13 {{ app('request')->input('category') == $category->name ? 'active1' : '' }}">
+              <a data-category="{{ $category->name }}" href="{{ '/products?category=' . $category->name }}"
+                class="s-text13 {{ app('request')->input('category') == $category->name ? 'active1' : '' }}">
                 {{ $category->name }}
               </a>
             </li>
@@ -36,7 +39,8 @@
             @endforeach
 
             <li class="p-t-4">
-              <a data-categoryCode="others" href="/products?category=Others" class="s-text13 {{ app('request')->input('category') == 'Others' ? 'active1' : '' }}">
+              <a data-categoryCode="others" href="/products?category=Others"
+                class="s-text13 {{ app('request')->input('category') == 'Others' ? 'active1' : '' }}">
                 Others
               </a>
             </li>
@@ -113,7 +117,8 @@
           </div>
 
           <span class="s-text8 p-t-5 p-b-5">
-          Showing {{ $products->firstItem() ? $products->firstItem() . '-' . $products->lastItem() . ' of' : '' }} {{ $products->total() }} result(s)
+            Showing {{ $products->firstItem() ? $products->firstItem() . '-' . $products->lastItem() . ' of' : '' }}
+            {{ $products->total() }} result(s)
           </span>
         </div>
 
@@ -127,11 +132,6 @@
                 <img src="{{ asset($product->images[0]->path ?? '') }}" alt="{{ $product->sku }}">
 
                 <div class="block2-overlay trans-0-4">
-                  <span class="block2-btn-addwishlist hov-pointer trans-0-4">
-                    <i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
-                    <i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
-                  </span>
-
                   <div class="block2-btn-addcart w-size1 trans-0-4" data-product-id="{{ $product->id }}">
                     <!-- Button -->
                     <button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
