@@ -11,23 +11,23 @@
 
 <div class="mb-3">
   Price:
-  <input type="text" id="min-price" placeholder="Min">
-  <input type="text" id="max-price" placeholder="Max">
+  <input type="number" id="min-price" placeholder="Min">
+  <input type="number" id="max-price" placeholder="Max">
 </div>
 
 <div class="table-responsive mb-5">
   <table class="table" id="products-table" data-page-length="100">
-    <thead class="text-uppercase">
+    <thead>
       <tr>
-        <th scope="col">SKU</th>
-        <th scope="col">Name</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Ordered</th>
-        <th scope="col">Available</th>
-        <th scope="col">Price</th>
-        <th scope="col">Category</th>
-        <th scope="col">Visible</th>
-        <th scope="col"></th>
+        <th>SKU</th>
+        <th>Name</th>
+        <th>Stock</th>
+        <th>Ordered</th>
+        <th>Available</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Visible</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>

@@ -26,11 +26,23 @@
           Users
         </a>
       </li>
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span>Reports</span>
+    </h6>
+    <ul class="nav flex-column mb-2">
       <li class="nav-item">
-        <a class="nav-link {{ strpos($currentRoute, 'admin.reports') !== false ? 'active' : '' }}"
-          href="/admin/reports">
-          <i class="fa fa-bar-chart" aria-hidden="true"></i>
-          Reports
+        <a class="nav-link {{ strpos($currentRoute, 'RevenueCustomer') !== false ? 'active' : '' }}"
+          href="/admin/reports/revenue/customer">
+          <i class="fa fa-file-text-o" aria-hidden="true"></i>
+          Customer
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ strpos($currentRoute, 'RevenueProduct') !== false ? 'active' : '' }}"
+          href="/admin/reports/revenue/product">
+          <i class="fa fa-file-text-o" aria-hidden="true"></i>
+          Product
         </a>
       </li>
     </ul>

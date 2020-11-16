@@ -73,6 +73,11 @@ Route::prefix('admin')->middleware(['role:admin'])->group(function() {
     Route::post('users/update/{id}', 'AdminController@updateUser')->name('admin.users.update');
     Route::get('users/add', 'AdminController@addUser')->name('admin.users.add');
     Route::post('users/store', 'AdminController@storeUser')->name('admin.users.store');
+
+    Route::get('reports/revenue/customer', 'AdminController@getCustomerRevenueReport')->name('admin.reports.getRevenueCustomer');
+    Route::post('reports/revenue/customer', 'AdminController@createCustomerRevenueReport')->name('admin.reports.createRevenueCustomer');
+    Route::get('reports/revenue/product', 'AdminController@getProductRevenueReport')->name('admin.reports.getRevenueProduct');
+    Route::post('reports/revenue/product', 'AdminController@createProductRevenueReport')->name('admin.reports.createRevenueProduct');
 });
 
 Auth::routes();

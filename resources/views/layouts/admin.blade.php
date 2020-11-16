@@ -17,6 +17,7 @@
 
   <!-- datatable css -->
   <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/datatables.min.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('vendor/chosen/chosen.css') }}" />
 
 
   <!-- Others CSS -->
@@ -25,6 +26,7 @@
 
   <script type="text/javascript" src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('vendor/sweetalert/sweetalert.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('vendor/chosen/chosen.jquery.min.js') }}"></script>
   <style>
     .bd-placeholder-img {
       font-size: 1.125rem;
@@ -80,7 +82,6 @@
 
   <script type="text/javascript" src="{{ asset('js/moment.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('vendor/datatables/datatables.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/datetime-moment.js') }}"></script>
 </body>
 
 </html>

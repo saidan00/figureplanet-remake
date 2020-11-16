@@ -6,10 +6,17 @@
 </div>
 
 <div class="mb-3">
-  Date:
+  <span>Date:</span>
   <input type="date" id="from-date" placeholder="from">
   <input type="date" id="to-date" placeholder="to">
-  <input type="button" id="refresh-date" value="Refresh">
+  <button id="refresh-date"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+  <span class="ml-3">Status:</span>
+  <select id="statuses">
+    <option value=""></option>
+    @foreach ($statuses as $item)
+    <option value="{{ $item->name }}">{{ $item->name }}</option>
+    @endforeach
+  </select>
 </div>
 
 <div class="table-responsive mb-5">
@@ -22,12 +29,11 @@
         <th scope="col">Total</th>
         <th scope="col">Email</th>
         <th scope="col">Status</th>
-        <th scope="col">Info</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
       @foreach ($orders as $item)
-
       <tr>
         <td>{{ $item->id }}</td>
         <td>{{ $item->created_at->format('d/m/Y - H:i') }}</td>
@@ -36,7 +42,7 @@
         <td>{{ $item->user->email }}</td>
         <td class="{{ $item->statusClassName }} font-weight-bold">{{ $item->order_status->name }}</td>
         <td>
-          <a href="/admin/orders/{{ $item->id }}"><i class="fa fa-info-circle fa-lg text-dark"></i></a>
+          <a href="/admin/orders/{{ $item->id }}"><i class="fa fa-edit fa-lg text-dark"></i></a>
         </td>
       </tr>
       @endforeach

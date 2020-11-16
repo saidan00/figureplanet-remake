@@ -1,14 +1,63 @@
 $(document).ready(function() {
+  $(".chosen-select").chosen();
+  // =============
+  // INIT TABLES
+  // =============
+
+  // products table
+  let productsTable = $('#products-table').DataTable({
+    // orderCellsTop: true,
+    fixedHeader: true,
+    // initComplete: function() {
+    //   addColumnFilter('products-table', this);
+    // },
+    columnDefs: [{
+      "orderable": false,
+      "targets": -1
+    }]
+  });
+
+  // orders table
+  let ordersTable = $('#orders-table').DataTable({
+    ordering: false
+  });
+
+  // users table
+  let usersTable = $('#users-table').DataTable({
+    order: [
+      [6, "asc"],
+      [5, "asc"]
+    ],
+    columnDefs: [{
+      targets: -1,
+      orderable: false
+    }]
+  });
+
+  let reportTable = $('#report-table').DataTable({
+    ordering: false,
+    dom: 'Bfrtip',
+    buttons: [{
+      extend: 'pdfHtml5',
+      footer: true,
+      messageTop: 'Revenue report',
+      className: 'btn-success'
+    }]
+  });
+
+
+  // ==========================
+  // SETUP AND FILTERING TABLES
+  // ==========================
+
   if ($('#products-table').length) {
     $.fn.dataTable.ext.search.push(
       function(settings, data, dataIndex) {
         let min = $('#min-price').val();
         let max = $('#max-price').val();
-        let age = data[3] || 0; // use data for the price column
+        let age = data[5] || 0; // use data for the price column
 
         age = age.replace(/,/g, '');
-        min = min.replace(/,/g, '');
-        max = max.replace(/,/g, '');
 
         age = parseInt(age, 10);
         min = parseInt(min, 10);
@@ -23,13 +72,17 @@ $(document).ready(function() {
         return false;
       }
     );
-  } else if ($('#orders-table').length) {
-    $.fn.dataTable.moment('dd/MM/YYYY - HH:mm');
+  }
+
+  if ($('#orders-table').length) {
     $.fn.dataTable.ext.search.push(
       function(settings, data, dataIndex) {
         let fromDate = $('#from-date').val();
         let toDate = $('#to-date').val();
+        let status = $('#statuses').val();
+
         let date = data[1] || 0; // use data for the date column
+        let orderStatus = data[5];
 
         date = date.split(' - ')[0];
         date = date.split('/');
@@ -54,58 +107,55 @@ $(document).ready(function() {
           result = true;
         }
 
+        if (status != '') {
+          if (orderStatus == status) {
+            result = true;
+          } else {
+            result = false;
+          }
+        }
+
         return result;
       }
     );
   }
 
+
+  // ==========================
+  // FILTER INDIVIDUAL COLUMNS
+  // ==========================
+
   // Setup - add a text input to each footer cell
-  // $('#products-table thead tr').clone(true).appendTo('#products-table thead');
-  // $('#products-table thead tr:eq(1) th').each(function(i) {
-  //   var title = $(this).text();
-  //   $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+  function addColumnFilter(id, table) {
+    $('#' + id + ' thead tr').clone(true).appendTo('#' + id + ' thead');
+    $('#' + id + ' thead tr:eq(1) th').each(function(i) {
+      if (i != $('#' + id + ' thead tr:eq(1) th').length - 1) {
+        $(this).html('<input type="text" style=width:100%>');
 
-  //   $('input', this).on('keyup change', function() {
-  //     if (productTable.column(i).search() !== this.value) {
-  //       productTable
-  //         .column(i)
-  //         .search(this.value)
-  //         .draw();
-  //     }
-  //   });
-  // });
+        $('input', this).on('keyup change', function() {
+          if (table.column(i).search() !== this.value) {
+            table
+              .column(i)
+              .search(this.value)
+              .draw();
+          }
+        });
+      }
+    });
+  }
 
-  // products table
-  let productsTable = $('#products-table').DataTable({
-    orderCellsTop: true,
-    'fixedHeader': true,
-    columnDefs: [{
-      "orderable": false,
-      "targets": -1
-    }]
-  });
+  // =============
+  // EVENT BINDING
+  // =============
 
-  // filter min max price
+  // filter min max price event
   $('#min-price, #max-price').on('keyup', function() {
     if ($(this).val() !== '') {
-      let n = parseInt($(this).val().replace(/\D/g, ''), 10);
-      $(this).val(n.toLocaleString());
       productsTable.draw();
     }
   });
 
-  // orders table
-  let ordersTable = $('#orders-table').DataTable({
-    order: [
-      [1, "asc"]
-    ],
-    columnDefs: [{
-      "orderable": false,
-      "targets": -1
-    }]
-  });
-
-  // filter by date
+  // filter by date event
   $('#from-date, #to-date').on('change', function() {
     ordersTable.draw();
   });
@@ -113,18 +163,11 @@ $(document).ready(function() {
   // refresh date
   $('#refresh-date').on('click', function() {
     $("input[type=date]").val("");
-    $('#from-date, #to-date').trigger('change');
+    $('#from-date').trigger('change');
   });
 
-  // users table
-  $('#users-table').DataTable({
-    order: [
-      [6, "asc"],
-      [5, "asc"]
-    ],
-    columnDefs: [{
-      targets: -1,
-      orderable: false
-    }]
+  // filter by status event
+  $('#statuses').on('change', function() {
+    ordersTable.draw();
   });
 });

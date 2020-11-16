@@ -9,12 +9,13 @@ use App\Category;
 use App\MediaFile;
 use App\OrderStatus;
 use App\MediaFileUsage;
-use Facade\FlareClient\Flare;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Faker\Generator as Faker;
 use Spatie\Permission\Models\Role;
+use stdClass;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -201,6 +202,7 @@ class AdminController extends Controller
     {
         $orders = Order::with(['user', 'order_status'])->orderBy('created_at', 'desc')->get();
         $currentRoute = Route::currentRouteName();
+        $statuses = OrderStatus::all();
 
         foreach ($orders as $item) {
             $item->statusClassName = '';
@@ -226,7 +228,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('admins.orders.index')->with(['orders' => $orders, 'currentRoute' => $currentRoute]);
+        return view('admins.orders.index')->with(['orders' => $orders, 'statuses' => $statuses, 'currentRoute' => $currentRoute]);
         // echo json_encode($orders);
     }
 
@@ -358,8 +360,6 @@ class AdminController extends Controller
     public function updateUser(Request $request, $id)
     {
         $user = User::find($id);
-        $roles = Role::all();
-        $currentRoute = Route::currentRouteName();
 
         if ($user->getRoleNames()->first() != $request->input('role')) {
             $user->syncRoles([$request->input('role')]);
@@ -408,5 +408,108 @@ class AdminController extends Controller
         $user->assignRole($request->input('role'));
 
         return back()->with(['flash' => 'User ' . $user->email . ' created.']);
+    }
+
+    public function getCustomerRevenueReport()
+    {
+        $currentRoute = Route::currentRouteName();
+
+        $users = User::all();
+
+        return view('admins.reports.revenue-customer')->with(['users' => $users, 'currentRoute' => $currentRoute]);
+    }
+
+    public function createCustomerRevenueReport(Request $request)
+    {
+        $currentRoute = Route::currentRouteName();
+
+        // dùng để tính tông
+        $summary = new stdClass;
+        $summary->products = 0;
+        $summary->total = 0;
+
+        $users = User::all();
+
+        // lấy các order có status là Completed
+        $orders = Order::whereHas('order_status', function ($s) {
+            $s->where('name', 'Completed');
+        });
+
+        // lọc theo ngày
+        if ($request->filled('from-date')) {
+            $orders = $orders->whereDate('created_at', '>=', $request->input('from-date'));
+        }
+
+        if ($request->filled('to-date')) {
+            $orders = $orders->whereDate('created_at', '<=', $request->input('to-date'));
+        }
+
+        if ($request->input('email') != 'All') {
+            $orders = $orders->whereHas('user', function ($u) use ($request) {
+                $u->where('email', $request->input('email'));
+            });
+        }
+
+        $orders = $orders->orderBy('created_at', 'desc');
+        $orders = $orders->get();
+
+
+        foreach ($orders as $item) {
+            $summary->products += $item->items_count;
+            $summary->total += $item->total;
+        }
+
+        session()->flashInput($request->input());
+
+        return view('admins.reports.revenue-customer')->with(['orders' => $orders, 'users' => $users, 'summary' => $summary, 'currentRoute' => $currentRoute]);
+        // echo json_encode($currentRoute);
+    }
+
+    public function getProductRevenueReport()
+    {
+        $currentRoute = Route::currentRouteName();
+        $products = Product::all();
+
+        return view('admins.reports.revenue-product')->with(['products' => $products, 'currentRoute' => $currentRoute]);
+    }
+
+    public function createProductRevenueReport(Request $request)
+    {
+        $currentRoute = Route::currentRouteName();
+        $products = Product::all();
+
+        $report = DB::table('products')
+            ->selectRaw('products.sku, products.name, COALESCE(SUM(order_details.quantity), 0) purchased, COALESCE(SUM(order_details.total), 0) total')
+            ->leftJoin('order_details', 'products.id', '=', 'order_details.product_id')
+            ->leftJoin('orders', 'orders.id', '=', 'order_details.order_id');
+
+        if ($request->filled('from-date')) {
+            $report = $report->whereDate('orders.created_at', '>=', $request->input('from-date'));
+        }
+
+        if ($request->filled('to-date')) {
+            $report = $report->whereDate('orders.created_at', '<=', $request->input('to-date'));
+        }
+
+        if ($request->input('product-id') != 'All') {
+            $report = $report->where('products.id', $request->input('product-id'));
+        }
+
+        $report = $report->groupBy('products.id', 'products.sku', 'products.name');
+        $report = $report->get();
+
+        // dùng để tính tông
+        $summary = new stdClass;
+        $summary->purchased = 0;
+        $summary->total = 0;
+
+        foreach ($report as $item) {
+            $summary->purchased += $item->purchased;
+            $summary->total += $item->total;
+        }
+
+        session()->flashInput($request->input());
+
+        return view('admins.reports.revenue-product')->with(['products' => $products, 'report' => $report, 'summary' => $summary, 'currentRoute' => $currentRoute]);
     }
 }
