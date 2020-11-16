@@ -36,7 +36,7 @@ $(document).ready(function() {
 
   let reportTable = $('#report-table').DataTable({
     ordering: false,
-    dom: 'Bfrtip',
+    dom: 'B<"row mt-2"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>ritp',
     buttons: [{
       extend: 'pdfHtml5',
       footer: true,

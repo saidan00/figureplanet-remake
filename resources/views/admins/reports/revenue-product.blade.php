@@ -12,17 +12,6 @@
     <input type="date" name="from-date" placeholder="from" value="{{ old('from-date', date('Y-m-d')) }}">
     <input type="date" name="to-date" placeholder="to" value="{{ old('to-date', date('Y-m-d')) }}">
     <button type="button" id="refresh-date"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-    <span class="ml-3">Product:</span>
-    <select name="product-id" class="chosen-select" data-placeholder=" ">
-      <option value="All">--all--</option>
-      @foreach ($products as $item)
-      @if (old('product-id') == $item->id)
-      <option value="{{ $item->id }}" selected>{{ $item->name }}</option>
-      @else
-      <option value="{{ $item->id }}">{{ $item->name }}</option>
-      @endif
-      @endforeach
-    </select>
     <br>
     <input class="mt-3" type="submit" value="Submit">
   </form>

@@ -444,16 +444,18 @@ class AdminController extends Controller
             $orders = $orders->whereDate('created_at', '<=', $request->input('to-date'));
         }
 
+        // lọc theo email
         if ($request->input('email') != 'All') {
             $orders = $orders->whereHas('user', function ($u) use ($request) {
                 $u->where('email', $request->input('email'));
             });
         }
 
+        // sắp xếp
         $orders = $orders->orderBy('created_at', 'desc');
         $orders = $orders->get();
 
-
+        // tính tổng cộng
         foreach ($orders as $item) {
             $summary->products += $item->items_count;
             $summary->total += $item->total;
@@ -478,38 +480,51 @@ class AdminController extends Controller
         $currentRoute = Route::currentRouteName();
         $products = Product::all();
 
-        $report = DB::table('products')
+        // lấy những sản phẩm đã bán trong một khoảng thời gian cụ thể (sku, tên sp, số lượng bán, tổng tiền)
+        $purchasedReport = DB::table('products')
             ->selectRaw('products.sku, products.name, COALESCE(SUM(order_details.quantity), 0) purchased, COALESCE(SUM(order_details.total), 0) total')
-            ->leftJoin('order_details', 'products.id', '=', 'order_details.product_id')
-            ->leftJoin('orders', 'orders.id', '=', 'order_details.order_id');
+            ->join('order_details', 'products.id', '=', 'order_details.product_id')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->join('order_statuses', 'order_statuses.id', '=', 'orders.order_status_id')
+            ->where('order_statuses.name', 'like', 'Completed')
+            ->when($request->input('from-date'), function ($query) use ($request) {
+                return $query->whereDate('orders.created_at', '>=', $request->input('from-date'));
+            })
+            ->when($request->input('to-date'), function ($query) use ($request) {
+                return $query->whereDate('orders.created_at', '<=', $request->input('to-date'));
+            })
+            ->groupBy('products.id', 'products.sku', 'products.name')
+            ->orderByDesc('total');
 
-        if ($request->filled('from-date')) {
-            $report = $report->whereDate('orders.created_at', '>=', $request->input('from-date'));
-        }
+        // xóa bảng tạm nếu nó vẫn còn trong hệ thống (trường hợp xảy ra lỗi khi chưa chạy tới lệnh xóa cuối hàm)
+        DB::statement('DROP TABLE IF EXISTS tmp_product_revenue');
+        // tạo bảng tạm lưu kết quả của report
+        DB::statement('CREATE TABLE tmp_product_revenue ' . DB::raw($purchasedReport->toSql()), $purchasedReport->getBindings());
 
-        if ($request->filled('to-date')) {
-            $report = $report->whereDate('orders.created_at', '<=', $request->input('to-date'));
-        }
+        // lấy những sản phẩm chưa được mua
+        $noPurchasedReport = DB::table('products')
+            ->selectRaw('products.sku, products.name, 0 purchased, 0 total')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('tmp_product_revenue as tmp')
+                    ->whereColumn('products.sku', 'tmp.sku');
+            })
+            ->orderBy('name');
 
-        if ($request->input('product-id') != 'All') {
-            $report = $report->where('products.id', $request->input('product-id'));
-        }
+        // thêm sản phẩm chưa được mua vào bảng tạm
+        DB::insert('INSERT INTO tmp_product_revenue ' . DB::raw($noPurchasedReport->toSql()));
 
-        $report = $report->groupBy('products.id', 'products.sku', 'products.name');
-        $report = $report->get();
+        // báo cáo trả về client
+        $report = DB::table('tmp_product_revenue')->get();
+        $summary = DB::table('tmp_product_revenue')->selectRaw('SUM(purchased) purchased, SUM(total) total')->first();
 
-        // dùng để tính tông
-        $summary = new stdClass;
-        $summary->purchased = 0;
-        $summary->total = 0;
+        // xóa bảng tạm
+        DB::statement('DROP TABLE IF EXISTS tmp_product_revenue');
 
-        foreach ($report as $item) {
-            $summary->purchased += $item->purchased;
-            $summary->total += $item->total;
-        }
-
+        // trả về input của client
         session()->flashInput($request->input());
 
         return view('admins.reports.revenue-product')->with(['products' => $products, 'report' => $report, 'summary' => $summary, 'currentRoute' => $currentRoute]);
+        // return json_encode($summary);
     }
 }
