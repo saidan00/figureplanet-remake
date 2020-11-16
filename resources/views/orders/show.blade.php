@@ -61,6 +61,12 @@
             <td class="font-weight-bold">Status:</td>
             <td class="p-l-10">{{ $order->order_status->name }}</td>
           </tr>
+          @if ($order->note != null)
+          <tr>
+            <td class="font-weight-bold">Note:</td>
+            <td class="p-l-10">{{ $order->note }}</td>
+          </tr>
+          @endif
         </table>
       </div>
     </div>
@@ -91,7 +97,8 @@
       <input type="hidden" name="order_id" value="{{ $order->id }}">
       <input type="hidden" name="note" value="khách hàng hủy">
       <!-- Button -->
-      <input type="submit" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4" value="Cancel"  id="cancel-btn">
+      <input type="submit" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4" value="Cancel"
+        id="cancel-btn">
     </div>
   </form>
   @endif

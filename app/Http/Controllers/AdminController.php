@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Faker\Generator as Faker;
 use Spatie\Permission\Models\Role;
-use stdClass;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class AdminController extends Controller
 {
@@ -31,13 +31,16 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $user = User::find(auth()->user()->id);
-        if ($user->hasRole('admin')) {
-            return redirect("admins/users");
-        } else if ($user->hasRole('manager')) {
-            return redirect("admins/products");
+        if (auth()->check()) {
+            $user = User::find(auth()->user()->id);
+
+            if ($user->hasRole('admin')) {
+                return redirect("/admin/users");
+            } else if ($user->hasRole('manager')) {
+                return redirect("/admin/orders");
+            }
         } else {
-            return abort(403);
+            return redirect("/");
         }
     }
 
@@ -170,7 +173,7 @@ class AdminController extends Controller
             $product->save();
         }
 
-        return back();
+        return back()->with(['flash' => 'Product is ' . $product->sku . ' updated']);
     }
 
     /**

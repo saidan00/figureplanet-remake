@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\Cart;
 use App\CartItem;
 use App\Http\Resources\Cart as CartResource;
-use App\Http\Resources\CartItem as CartItemResource;
 use App\Product;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 

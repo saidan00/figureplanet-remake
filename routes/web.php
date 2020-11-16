@@ -51,29 +51,33 @@ Route::post('orders/create', 'OrdersController@create')->middleware('auth');
 Route::post('orders/cancelorder', 'OrdersController@cancelOrder')->middleware('auth');
 
 // Admin
-Route::prefix('admin')->middleware(['role:admin'])->group(function() {
-    Route::get('', function() {
-        echo 'Hello Admin';
-    });
+Route::prefix('admin')->middleware(['role:admin|manager'])->group(function () {
+    Route::get('', 'AdminController@index');
 
     Route::get('instant', 'AdminController@instant');
 
+    // PRODUCTS
     Route::get('products', 'AdminController@getProducts')->name('admin.products.index');
-    Route::get('products/add', 'AdminController@addProduct')->name('admin.products.add');
     Route::get('products/edit/{sku}', 'AdminController@editProduct')->name('admin.products.edit');
-    Route::post('products/store', 'AdminController@storeProduct')->name('admin.products.store');
-    Route::post('products/update/{id}', 'AdminController@updateProduct')->name('admin.products.update');
 
+    Route::post('products/update/{id}', 'AdminController@updateProduct')->middleware(['role:admin'])->name('admin.products.update');
+    Route::get('products/add', 'AdminController@addProduct')->middleware(['role:admin'])->name('admin.products.add');
+    Route::post('products/store', 'AdminController@storeProduct')->middleware(['role:admin'])->name('admin.products.store');
+
+    // ORDERS
     Route::get('orders', 'AdminController@getOrders')->name('admin.orders.index');
     Route::get('orders/{id}', 'AdminController@showOrder')->name('admin.orders.show');
     Route::post('orders/updateorderstatus/{id}', 'AdminController@updateOrderStatus')->name('admin.orders.update');
 
+    // USER
     Route::get('users', 'AdminController@getUsers')->name('admin.users.index');
     Route::get('users/edit/{id}', 'AdminController@editUser')->name('admin.users.edit');
-    Route::post('users/update/{id}', 'AdminController@updateUser')->name('admin.users.update');
-    Route::get('users/add', 'AdminController@addUser')->name('admin.users.add');
-    Route::post('users/store', 'AdminController@storeUser')->name('admin.users.store');
 
+    Route::post('users/update/{id}', 'AdminController@updateUser')->middleware(['role:admin'])->name('admin.users.update');
+    Route::get('users/add', 'AdminController@addUser')->middleware(['role:admin'])->name('admin.users.add');
+    Route::post('users/store', 'AdminController@storeUser')->middleware(['role:admin'])->name('admin.users.store');
+
+    // REPORT
     Route::get('reports/revenue/customer', 'AdminController@getCustomerRevenueReport')->name('admin.reports.getRevenueCustomer');
     Route::post('reports/revenue/customer', 'AdminController@createCustomerRevenueReport')->name('admin.reports.createRevenueCustomer');
     Route::get('reports/revenue/product', 'AdminController@getProductRevenueReport')->name('admin.reports.getRevenueProduct');
