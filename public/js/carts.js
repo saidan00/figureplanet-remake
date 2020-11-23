@@ -7,7 +7,9 @@ $(document).ready(function() {
 
     $(this).on("click", function() {
       let productId = $(this).data('productId');
-      addToCart(productId, productName);
+      if (productId != undefined) {
+        addToCart(productId, productName);
+      }
     });
   });
 

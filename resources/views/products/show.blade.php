@@ -63,7 +63,7 @@
       </div>
 
       <!--  -->
-      @if ($product->quantity != 0)
+      @if ($product->available_quantity != 0)
       <div class="add-product p-t-33 p-b-60">
         <div class="flex-r-m flex-w p-t-10">
           <div class="w-size16 flex-m flex-w">
@@ -89,13 +89,27 @@
           </div>
         </div>
       </div>
+      @else
+      <div class="add-product p-t-33 p-b-60">
+        <div class="flex-r-m flex-w p-t-10">
+          <div class="w-size16 flex-m flex-w">
+            <div class="size9 trans-0-4 m-t-10 m-b-10">
+              <!-- Button -->
+              <button class="flex-c-m sizefull bg1 bo-rad-23 s-text1 trans-0-4">
+                Out of stock
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       @endif
 
       <div class="p-b-45">
         <span class="s-text8 m-r-35">SKU: {{ $product->sku }}</span>
         <span class="s-text8 m-r-35">Categories: {{ $product->category->name }}</span>
-        @if ($product->available_quantity <= 5 ) <span class="s-text8">Quantity:
-          {{ $product->available_quantity }}</span>
+        @if ($product->available_quantity <= 5 ) <span class="s-text8">
+          Quantity: {{ $product->available_quantity }}
+          </span>
           @endif
       </div>
 

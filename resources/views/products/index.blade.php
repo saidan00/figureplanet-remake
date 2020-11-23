@@ -131,6 +131,7 @@
               <div class="block2-img wrap-pic-w of-hidden pos-relative block2-label">
                 <img src="{{ asset($product->images[0]->path ?? '') }}" alt="{{ $product->sku }}">
 
+                @if ($product->available_quantity != 0)
                 <div class="block2-overlay trans-0-4">
                   <div class="block2-btn-addcart w-size1 trans-0-4" data-product-id="{{ $product->id }}">
                     <!-- Button -->
@@ -139,6 +140,16 @@
                     </button>
                   </div>
                 </div>
+                @else
+                <div class="block2-overlay trans-0-4">
+                  <div class="block2-btn-addcart w-size1 trans-0-4">
+                    <!-- Button -->
+                    <button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+                      Out of stock
+                    </button>
+                  </div>
+                </div>
+                @endif
               </div>
 
               <div class="block2-txt p-t-20">
